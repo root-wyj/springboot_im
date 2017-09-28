@@ -1,6 +1,14 @@
 # springboot_im
 使用springboot开发的一个极其简易的可以聊天或者留言的web。主要联系springboot相关知识和长连接。
 
+ps: git常用命令
+- git init
+- git add .|file
+- git commit -m 'commit log'
+- git push -u origin master
+- git pull [origin master --allow-unrelated-histories]
+- git remote add origin https://github.com/root-wyj/springboot_im.git
+
 ### springboot 学习教程
 基础教程参考的是：[翟永超的springboot教程专栏](http://blog.didispace.com/categories/Spring-Boot/)，里面还附有git地址。<br>
 基础提高教程可以参考：[zheting的springboot干货系列](http://www.cnblogs.com/zheting/category/966890.html)。<br>
@@ -14,7 +22,10 @@
 - [（八）数据存储篇-SQL关系型数据库之JdbcTemplate的使用](http://www.cnblogs.com/zheting/p/6707042.html)
 
 
+阿里druid 数据库连接池与tomcat-jdbc连接池比较：http://www.cnblogs.com/barrywxx/p/6343303.html。
+> 结论是：druid在连接次数多了之后，比如上万，平均时间相比于tomcat-jdbc更稳定一点，用时少一点。如果连接次数没有很多的话，tomcat-jdbc用时更少。
 
+druid语法可以参考 [Druid连接池-阿里巴巴开源JDBC组件](http://blog.csdn.net/chenleixing/article/details/45003753)
 
 
 

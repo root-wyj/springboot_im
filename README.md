@@ -1,7 +1,7 @@
 # springboot_im
 使用springboot开发的一个极其简易的可以聊天或者留言的web。主要联系springboot相关知识和长连接。
 
-###springboot 学习教程<br><br>
+### springboot 学习教程
 基础教程参考的是：[翟永超的springboot教程专栏](http://blog.didispace.com/categories/Spring-Boot/)，里面还附有git地址。<br>
 基础提高教程可以参考：[zheting的springboot干货系列](http://www.cnblogs.com/zheting/category/966890.html)。<br>
 包括：

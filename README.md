@@ -1,0 +1,2 @@
+# springboot_im
+使用springboot开发的一个极其简易的可以聊天或者留言的web。主要联系springboot相关知识和长连接。

@@ -7,9 +7,10 @@
 mvnw
 mvnw.cmd
 .mvn/*
+.idea/*
+target/
 
 ### STS ###
-target/
 .apt_generated
 .classpath
 .factorypath

@@ -3,6 +3,7 @@ package com.wyj.springboot.im.service.imp;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import com.wyj.springboot.im.entity.User;
 import com.wyj.springboot.im.jpa.UserRepository;
 import com.wyj.springboot.im.service.UserService;
 
@@ -20,5 +21,9 @@ public class UserServiceImp implements UserService{
 	
 	public boolean isExist(String name, String password) {
 		return null!=userRepository.findUser(name, password);
+	}
+	
+	public User getUser(String name) {
+		return userRepository.findByName(name);
 	}
 }

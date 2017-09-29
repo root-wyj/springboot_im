@@ -1,5 +1,7 @@
 package com.wyj.springboot.im.service;
 
+import com.wyj.springboot.im.entity.User;
+
 /**
  * 
  * @author wuyingjie
@@ -8,4 +10,6 @@ package com.wyj.springboot.im.service;
 
 public interface UserService{
 	boolean isExist(String name, String password);
+	
+	User getUser(String name);
 }

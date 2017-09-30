@@ -79,6 +79,17 @@
 			<plugin>
 				<groupId>org.springframework.boot</groupId>
 				<artifactId>spring-boot-maven-plugin</artifactId>
+				<!-- 下列参数配置tomcat可以远程调试
+					-Xdebug: 通知JVM工作在DEBUG模式下
+					-Xrunjdwp: 通知JVM使用(java debug wire protocol)来运行调试环境
+					-transport: 指定了调试数据的传送方式，这里是socket模式
+					-serverL 是否支持在server模式的vm中
+					-suspend 时候在调试客户端建立起来后，再执行VM。为y，当前的vm就是suspend直到有debug client连接进来才开始执行程序
+					使用mvn调试 命令：clean install -Ptest -X spring-boot:run
+				 -->
+				<configuration>
+            		<jvmArguments>-Xdebug -Xrunjdwp:transport=dt_socket,server=y,suspend=y,address=5005</jvmArguments>
+            </configuration>
 			</plugin>
 		</plugins>
 	</build>

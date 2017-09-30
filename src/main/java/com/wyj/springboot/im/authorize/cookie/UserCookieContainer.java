@@ -55,7 +55,7 @@ public class UserCookieContainer{
 			logger.error("加密生成UserCookieContainer的时候出错，error:"+e.getMessage()+". UserCookieContainer:{}"+JSON.toJSONString(c), e);
 		}
 		
-		return timestamp+","+encrytStr;
+		return timestamp+":"+encrytStr;
 	}
 	
 	public static UserCookieContainer resolveUserCookie(String key) {
@@ -63,7 +63,7 @@ public class UserCookieContainer{
 		UserCookieContainer result = null;
 		if (StringUtil.isEmpty(key)) return null;
 		
-		String[] values = key.split(",");
+		String[] values = key.split(":");
 		try {
 			if (Long.valueOf(values[0])+Constants.COOKIE_USER_EXPIRED*1000 < System.currentTimeMillis()) {
 				logger.info("cookie过期");

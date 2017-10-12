@@ -26,4 +26,8 @@ public class UserServiceImp implements UserService{
 	public User getUser(String name) {
 		return userRepository.findByName(name);
 	}
+	
+//	public boolean addUser(String name, String password) {
+		
+//	}
 }

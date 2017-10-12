@@ -10,7 +10,7 @@ import com.wyj.springboot.im.entity.User;
  * @date 2017年9月29日
  */
 
-@Component(value="userContext")
+//@Component(value="userContext")
 public class UserContext{
 	
 	private ThreadContext<User> threadContext = new ThreadContext<>();

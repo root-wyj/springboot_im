@@ -47,6 +47,11 @@
     		<artifactId>spring-boot-starter-data-jpa</artifactId>
 		</dependency>
 		
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-data-redis</artifactId>
+		</dependency>
+		
 		<!-- 这里虽然没有配置版本号，而且也没有引用版本号，但是不出错，
 			是因为在org.springframework.boot:spring-boot-dependencies:xx.pom中已经默认配置了mysql的版本号，并在里面引用上了 -->
 		<dependency>

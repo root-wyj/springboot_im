@@ -12,10 +12,10 @@ import com.wyj.springboot.im.authorize.UserContext;
  * @date 2017年9月29日
  */
 
-//@Configuration
+@Configuration
 public class BeanIocConfig {
 	
-//	@Bean
+	@Bean
 	public UserContext userContext() {
 		return new UserContext();
 	}

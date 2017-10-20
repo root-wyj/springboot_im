@@ -87,7 +87,14 @@ public class UserController {
 	
 	@GetMapping("/redis/del")
 	public String delInRedis(@RequestParam(name="key")String key) {
-		return redisService.del(key)+"";
+		redisService.del(key);
+		return "success";
+	}
+	
+	@GetMapping("/redis/delu")
+	public String redisDelUser(@RequestParam(name="key") String key) {
+		redisTemplate.delete(key);
+		return "success";
 	}
 	
 	@Autowired

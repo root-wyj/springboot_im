@@ -13,5 +13,5 @@ public interface IRedisService {
 	
 	public boolean expire(String key, long expire);
 	
-	public long del(String key);
+	public void del(String key);
 }

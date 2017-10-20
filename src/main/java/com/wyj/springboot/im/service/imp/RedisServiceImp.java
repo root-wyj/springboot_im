@@ -62,16 +62,8 @@ public class RedisServiceImp implements IRedisService{
 		});
 	}
 	
-	public long del(String key) {
-		return redisTemplate.execute(new RedisCallback<Long>() {
-			@Override
-			public Long doInRedis(RedisConnection connection) throws DataAccessException {
-				RedisSerializer<String> serializer = redisTemplate.getStringSerializer();
-				connection.close();
-				long result = connection.del(serializer.serialize(key));
-				return result;
-			}
-		});
+	public void del(String key) {
+		stringRedisTemplate.delete(key);
 	} 
 
 }

@@ -1,10 +1,14 @@
 package com.wyj.springboot.im.authorize.cookie;
 
+import javax.annotation.PostConstruct;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
 
 import com.alibaba.fastjson.JSON;
-import com.wyj.springboot.im.authorize.RedisCache;
+import com.wyj.springboot.im.authorize.cache.RedisCacheManager;
 import com.wyj.springboot.im.config.Constants;
 import com.wyj.springboot.im.entity.User;
 import com.wyj.springboot.im.tools.StringUtil;
@@ -15,7 +19,7 @@ import com.wyj.springboot.im.tools.XXTEA;
  * @author wuyingjie
  * @date 2017年7月28日
  */
-
+@Component
 public class UserCookieContainer{
 	private String uuid;
 	private User user;
@@ -41,6 +45,19 @@ public class UserCookieContainer{
 	
 	
 	static Logger logger = LoggerFactory.getLogger(UserCookieContainer.class);
+	
+	
+	@Autowired
+	RedisCacheManager<String, User> userCache;
+	
+	static RedisCacheManager<String, User> sUserCache;
+	
+	public UserCookieContainer() {}
+	
+	@PostConstruct
+	private void init() {
+		sUserCache = userCache;
+	}
 	
 	public static String generatorKey(UserCookieContainer c) {
 		if (c == null || StringUtil.isEmpty(c.uuid) || c.user == null || c.user.getId() <= 0) {
@@ -80,8 +97,7 @@ public class UserCookieContainer{
 			String userId = desValues[1];
 			
 			//如果有这条数据 这时候已经更新了服务器方面的 cache失效时间
-			RedisCache redisCache = new RedisCache();
-			User user = redisCache.get(desValues[2].toString());
+			User user = sUserCache.get(desValues[2].toString());
 			//检查是否有该用户
 			if (user == null) {
 				logger.warn("从 cookie 中解析出来的 userid={} 在数据库中找不到", userId);

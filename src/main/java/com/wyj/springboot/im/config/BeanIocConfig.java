@@ -29,17 +29,17 @@ public class BeanIocConfig {
 		return new LongRedisCacheManager<User>(RedisCacheManager.DEFAULT_TIMEOUT, new KeySerilizable<User>() {
 			@Override
 			public String serilizableKey(User key) {
-				return key.getClass().getName()+"_"+key.getId()+"_loginTimeCache";
+				return "loginTimeCache_"+key.getClass().getName()+"_"+key.getId();
 			}
 		});
 	}
 	
 	@Bean(name="userCache")
-	public RedisCacheManager<User, User> userCM() {
-		return new RedisCacheManager<User, User>(RedisCacheManager.DEFAULT_TIMEOUT, new KeySerilizable<User>() {
+	public RedisCacheManager<String, User> userCM() {
+		return new RedisCacheManager<String, User>(20*60, new KeySerilizable<String>() {
 			@Override
-			public String serilizableKey(User key) {
-				return key.getClass().getName()+"_"+key.getId()+"_loginTimeCache";
+			public String serilizableKey(String key) {
+				return "userCache_"+key.getClass().getName()+"_"+key;
 			}
 		});
 	}

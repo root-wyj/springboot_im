@@ -14,8 +14,9 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.alibaba.fastjson.JSON;
-import com.wyj.springboot.im.authorize.RedisCache;
 import com.wyj.springboot.im.authorize.UserContext;
+import com.wyj.springboot.im.authorize.cache.LongRedisCacheManager;
+import com.wyj.springboot.im.authorize.cache.RedisCacheManager;
 import com.wyj.springboot.im.authorize.cookie.CookieFactory;
 import com.wyj.springboot.im.authorize.cookie.UserCookieContainer;
 import com.wyj.springboot.im.entity.User;
@@ -35,7 +36,9 @@ public class UserController {
 	UserService userService;
 	
 	@Autowired
-	RedisCache redisCache;
+	RedisCacheManager<String, User> userCache;
+	@Autowired
+	LongRedisCacheManager<User> loginTimeCache;
 	
 	@Resource
 	IRedisService redisService;
@@ -58,7 +61,8 @@ public class UserController {
 		response.addCookie(
 				CookieFactory.getUserCookie(new UserCookieContainer(uuid, userInfo, System.currentTimeMillis())));
 		// 添加到cache中
-		redisCache.save(uuid, userInfo);
+		userCache.set(uuid, userInfo);
+		loginTimeCache.increment(userInfo);
 
 		response.addCookie(CookieFactory.getUsernameCookie(userInfo.getName()));
 

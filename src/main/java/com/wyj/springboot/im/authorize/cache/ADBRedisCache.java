@@ -1,48 +1,32 @@
 package com.wyj.springboot.im.authorize.cache;
 
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.redis.core.RedisTemplate;
-import org.springframework.data.redis.core.StringRedisTemplate;
-
 /**
  * 
  * @author wuyingjie
  * @date 2017年10月20日
  */
 
-public abstract class ADBRedisCache<T> implements IRedisCache<T>{
-
-	@Autowired
-	RedisTemplate<String, T> redisTemplate;
-	@Autowired
-	StringRedisTemplate stringRedisTemplate;
+public abstract class ADBRedisCache<V> extends RedisCacheManager<String, V>{
 	
-	private RedisTemplate<String, T> myTemplate;
-	
-	@SuppressWarnings("unchecked")
-	public ADBRedisCache (Class<T> cls) {
-		if (cls.isAssignableFrom(String.class)) {
-			myTemplate =  (RedisTemplate<String, T>) stringRedisTemplate;
-		} else {
-			myTemplate = redisTemplate;
-		}
-	}
-	
-	@Override
-	public void set(String key, T value) {
-		myTemplate.opsForValue().set(key, value);
+	public ADBRedisCache(long timeout) {
+		super(timeout);
 	}
 
 	@Override
-	public T get(String key) {
-		return myTemplate.opsForValue().get(key);
+	public void set(String key, V value) {
+		redisTemplate.opsForValue().set(key, value);
+	}
+
+	@Override
+	public V get(String key) {
+		return redisTemplate.opsForValue().get(key);
 	}
 
 	@Override
 	public void del(String key) {
-		myTemplate.delete(key);
+		redisTemplate.delete(key);
 	}
 	
-	protected abstract T getFromDB (long id);
+	protected abstract V getFromDB (long id);
 
 }

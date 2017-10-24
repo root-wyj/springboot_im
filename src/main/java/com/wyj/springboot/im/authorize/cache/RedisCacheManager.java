@@ -2,7 +2,9 @@ package com.wyj.springboot.im.authorize.cache;
 
 import java.util.concurrent.TimeUnit;
 
-import org.springframework.beans.factory.annotation.Autowired;
+import javax.annotation.PostConstruct;
+import javax.annotation.Resource;
+
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.data.redis.serializer.StringRedisSerializer;
 
@@ -14,7 +16,7 @@ import org.springframework.data.redis.serializer.StringRedisSerializer;
 
 public class RedisCacheManager<K, V> implements IRedisCache<K, V>{
 
-	@Autowired
+	@Resource(name="redisTemplate")
 	protected RedisTemplate<String, V> redisTemplate;
 	
 	private KeySerilizable<K> keySerilizable = new KeySerilizable<K>() {
@@ -27,8 +29,13 @@ public class RedisCacheManager<K, V> implements IRedisCache<K, V>{
 	
 	public static final long DEFAULT_TIMEOUT = -1;
 	
-	public RedisCacheManager(long timeout){
+	@PostConstruct
+	private void init() {
 		redisTemplate.setKeySerializer(new StringRedisSerializer());
+	}
+	
+	public RedisCacheManager(long timeout){
+		this.timeout = timeout;
 	}
 	
 	public RedisCacheManager(long timeout, KeySerilizable<K> keySerilizable) {
@@ -45,12 +52,20 @@ public class RedisCacheManager<K, V> implements IRedisCache<K, V>{
 
 	@Override
 	public void set(K key, V value) {
-		redisTemplate.opsForValue().set(serilizableKey(key), value, timeout, TimeUnit.SECONDS);
+		if (timeout > 0) {
+			redisTemplate.opsForValue().set(serilizableKey(key), value, timeout, TimeUnit.SECONDS);
+		} else {
+			redisTemplate.opsForValue().set(serilizableKey(key), value);
+		}
 	}
 
 	@Override
 	public V get(K key) {
-		return redisTemplate.opsForValue().get(serilizableKey(key));
+		V value = redisTemplate.opsForValue().get(serilizableKey(key));
+		if (value != null && timeout > 0) {
+			redisTemplate.expire(serilizableKey(key), timeout, TimeUnit.SECONDS);
+		}
+		return value;
 	}
 
 	@Override

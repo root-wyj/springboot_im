@@ -30,6 +30,7 @@ import com.wyj.springboot.im.service.UserService;
  */
 
 @RestController
+@RequestMapping(produces="application/json;charset=utf-8")
 public class UserController {
 	
 	@Autowired

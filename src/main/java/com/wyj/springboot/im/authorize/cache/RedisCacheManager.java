@@ -2,11 +2,9 @@ package com.wyj.springboot.im.authorize.cache;
 
 import java.util.concurrent.TimeUnit;
 
-import javax.annotation.PostConstruct;
 import javax.annotation.Resource;
 
 import org.springframework.data.redis.core.RedisTemplate;
-import org.springframework.data.redis.serializer.StringRedisSerializer;
 
 /**
  * 
@@ -29,10 +27,11 @@ public class RedisCacheManager<K, V> implements IRedisCache<K, V>{
 	
 	public static final long DEFAULT_TIMEOUT = -1;
 	
-	@PostConstruct
-	private void init() {
-		redisTemplate.setKeySerializer(new StringRedisSerializer());
-	}
+//	@PostConstruct
+//	private void init() {
+//		redisTemplate.setKeySerializer(new StringRedisSerializer());
+//		redisTemplate.setValueSerializer(new Jackson2JsonRedisSerializer<>(Object.class));
+//	}
 	
 	public RedisCacheManager(long timeout){
 		this.timeout = timeout;

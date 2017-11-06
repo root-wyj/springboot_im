@@ -9,6 +9,13 @@ ps: git常用命令
 - git pull [origin master --allow-unrelated-histories]
 - git remote add origin https://github.com/root-wyj/springboot_im.git
 
+另外，git如果是第一次使用的话，需要认证身份，通过下面的步骤：
+1. git config --global user.name "yourname"
+2. git config --global user.email "youemail"
+3. 生成秘钥： ssh-keygen -t rsa -C "youemail"
+4. 之后就是让你输入连接杆github时的密码，密码确认密码，可直接3个回车略过，表示密码为空
+5. 到github上添加秘钥 中的公钥
+
 ### springboot 学习教程
 基础教程参考的是：[翟永超的springboot教程专栏](http://blog.didispace.com/categories/Spring-Boot/)，里面还附有git地址。<br>
 基础提高教程可以参考：[zheting的springboot干货系列](http://www.cnblogs.com/zheting/category/966890.html)。<br>

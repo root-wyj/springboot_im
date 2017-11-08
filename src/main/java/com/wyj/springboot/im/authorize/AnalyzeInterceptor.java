@@ -59,16 +59,16 @@ public class AnalyzeInterceptor implements HandlerInterceptor{
 			if ((container = UserCookieContainer.resolveUserCookie(userSessionCookie)) != null) {
 				setUser(container.getUser(), container.getUuid());
 				userId = container.getUser().getId();
-				
+
 				//如果超过3分钟更新
 //				updateUserCookie(container, response);
-				
+
 				if (StringUtil.isEmpty(usernameCookie)) {
 //					UserInfo userInfo = userService.getUserInfoById(userId);
 //					response.addCookie(CookieFactory.getUsernameCookie(userInfo.getNickname()));
 //					response.addCookie(CookieFactory.getUserIconCookie(userInfo.getIcon()));
 				}
-				
+
 			} else {
 				response.addCookie(EmptyCookieFactory.getEmptyUserCookie());
 			}

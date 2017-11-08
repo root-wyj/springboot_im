@@ -8,6 +8,7 @@ import javax.servlet.http.HttpServletResponse;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.redis.core.RedisTemplate;
+import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -30,7 +31,7 @@ import com.wyj.springboot.im.service.UserService;
  */
 
 @RestController
-@RequestMapping(produces="application/json;charset=utf-8")
+@RequestMapping(value = "user",produces="application/json;charset=utf-8")
 public class UserController {
 	
 	@Autowired
@@ -62,8 +63,8 @@ public class UserController {
 		response.addCookie(
 				CookieFactory.getUserCookie(new UserCookieContainer(uuid, userInfo, System.currentTimeMillis())));
 		// 添加到cache中
-		userCache.set(uuid, userInfo);
-		loginTimeCache.increment(userInfo);
+//		userCache.set(uuid, userInfo);
+//		loginTimeCache.increment(userInfo);
 
 		response.addCookie(CookieFactory.getUsernameCookie(userInfo.getName()));
 

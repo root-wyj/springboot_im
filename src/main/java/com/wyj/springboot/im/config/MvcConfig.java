@@ -2,11 +2,11 @@ package com.wyj.springboot.im.config;
 
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.web.servlet.config.annotation.EnableWebMvc;
-import org.springframework.web.servlet.config.annotation.InterceptorRegistry;
-import org.springframework.web.servlet.config.annotation.WebMvcConfigurerAdapter;
+import org.springframework.web.servlet.config.annotation.*;
 
 import com.wyj.springboot.im.authorize.AnalyzeInterceptor;
+import org.springframework.web.servlet.resource.DefaultServletHttpRequestHandler;
+import org.springframework.web.servlet.view.InternalResourceViewResolver;
 
 /**
  * 
@@ -16,7 +16,7 @@ import com.wyj.springboot.im.authorize.AnalyzeInterceptor;
 
 
 @Configuration
-@EnableWebMvc
+//@EnableWebMvc
 @ComponentScan(basePackages={"com.wyj.springboot.im.controller"})
 //@PropertySource(value = "classpath:application.properties",  ignoreResourceNotFound = true,encoding = "UTF-8") 
 public class MvcConfig extends WebMvcConfigurerAdapter{
@@ -24,7 +24,19 @@ public class MvcConfig extends WebMvcConfigurerAdapter{
 	@Override
 	public void addInterceptors(InterceptorRegistry registry) {
 		registry.addInterceptor(new AnalyzeInterceptor())
-				.addPathPatterns("/**");
+				.addPathPatterns("/**")
+//				.excludePathPatterns("/static/**")
+				;
 	}
-	
+
+//	@Override
+//	public void addResourceHandlers(ResourceHandlerRegistry registry) {
+//		registry.addResourceHandler("/static/").addResourceLocations("classpath:/static/");
+//		super.addResourceHandlers(registry);
+//	}
+//
+//	@Override
+//	public void configureDefaultServletHandling(DefaultServletHandlerConfigurer configurer) {
+//		configurer.enable();
+//	}
 }

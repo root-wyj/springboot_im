@@ -8,6 +8,9 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.boot.web.servlet.ServletRegistrationBean;
+import org.springframework.context.annotation.Bean;
+import org.springframework.web.servlet.DispatcherServlet;
 
 @SpringBootApplication
 public class ImApplication {
@@ -28,5 +31,13 @@ public class ImApplication {
 		app.setDefaultProperties(pro);
 		
 		app.run(args);
+	}
+
+//	@Bean
+	public ServletRegistrationBean dispatcherRegistration(DispatcherServlet dispatcherServlet) {
+		ServletRegistrationBean reg = new ServletRegistrationBean(dispatcherServlet);
+		reg.getUrlMappings().clear();
+		reg.addUrlMappings("/api/**");
+		return reg;
 	}
 }

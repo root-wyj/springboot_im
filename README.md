@@ -36,4 +36,9 @@ druid语法可以参考 [Druid连接池-阿里巴巴开源JDBC组件](http://blo
 
 [关于Spring-boot的debug调试](https://www.2cto.com/kf/201708/668239.html)
 
-im-长连接
+### netty-socketio 学习资源
+初级教程，也是[源码git项目](https://github.com/mrniko/netty-socketio)推荐的[demo](https://github.com/mrniko/netty-socketio-demo)<br>
+因为没有guide，所以只能多看项目，一下是在网上参考的一些项目，给了我很大的帮助：
+- [Spring Boot实战之netty-socketio实现简单聊天室(给指定用户推送消息)](http://blog.csdn.net/sun_t89/article/details/52060946)
+- [git 上的一个用了分布式和分布式锁的 NettySocketServer](https://github.com/wangnamu/NettySocketioServer) [该类MySocketIOServer](https://github.com/wangnamu/NettySocketioServer/blob/master/NettySocketioServer/src/main/java/com/ufo/NettySocketioServer/MySocketIOServer.java)是比较重要的一个类
+

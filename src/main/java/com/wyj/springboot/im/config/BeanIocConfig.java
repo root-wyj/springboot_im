@@ -3,11 +3,13 @@ package com.wyj.springboot.im.config;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
+import com.corundumstudio.socketio.annotation.SpringAnnotationScanner;
 import com.wyj.springboot.im.authorize.UserContext;
 import com.wyj.springboot.im.authorize.cache.KeySerilizable;
 import com.wyj.springboot.im.authorize.cache.LongRedisCacheManager;
 import com.wyj.springboot.im.authorize.cache.RedisCacheManager;
 import com.wyj.springboot.im.entity.User;
+import com.wyj.springboot.im.socketnio.NettySocketServer;
 
 
 /**
@@ -23,6 +25,16 @@ public class BeanIocConfig {
 	public UserContext userContext() {
 		return new UserContext();
 	}
+	
+	@Bean
+	public NettySocketServer socketServer() {
+		return new NettySocketServer();
+	}
+	
+	@Bean  
+    public SpringAnnotationScanner springAnnotationScanner(NettySocketServer socketServer) {  
+        return new SpringAnnotationScanner(socketServer.getServer());  
+    } 
 	
 	@Bean(name="loginTimeCache")
 	public LongRedisCacheManager<User> loginTimeCM() {

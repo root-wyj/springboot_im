@@ -9,6 +9,8 @@ mvnw.cmd
 .mvn/*
 .idea/*
 target/
+.project
+.classpath
 
 ### STS ###
 .apt_generated

@@ -46,10 +46,27 @@ public class NettySocketServer {
 		});
 		
 		server = new SocketIOServer(config);
+//		server.addNamespace("room1");
 	}
 	
 	public SocketIOServer getServer() {
 		return server;
 	}
 	
+	//namespace 是什么 是客户端么， 那SocketIOServer里两个namespace，mainNamespace是用来添加监听的，另一个namespacesHub是什么意思？
+	//广播发送消息的时候，getBroadcastOperations相当于new 一个BroadcastOperations，第一个参数是所有的客户端，使用mainNamespace.getAllClients获取的
+	
+	/*
+	 * Namespace extends SocketIoNamespace 就是SocketIOServer里面mainNamespace，如果我们添加一个Namespace的话，就是添加了一个类似mainNamespace的东西，
+	 * mainNamespace保存了所有客户端的信息，比如说allClients 房间信息等 还有所有的监听器
+	 * 
+	 * NamespaceHub 就是 SocketIOServer里面 namespaceHub，保存了该server所有的Namespace（虽然现在还不知道第二个create第二个Namespace用来干什么）和 该Server的配置
+	 * 
+	 * BroadcastOperations 就是一个广播器，里面保存了SocketIoClient的列表和StoreFactory（暂时认为是一个发布消息的类），所以如果想给某一类用户发消息，就可以把这类用户放入到这个类的
+	 * 		实例中，然后一起发送。
+	 * Namespace 里面保存房间信息，
+	 * 
+	 * http://www.jb51.net/article/108633.htm
+	 * 
+	 */
 }

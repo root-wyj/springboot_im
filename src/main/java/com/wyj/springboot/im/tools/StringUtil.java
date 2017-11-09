@@ -1,13 +1,15 @@
 package com.wyj.springboot.im.tools;
 
-import java.net.URI;
-
 public class StringUtil {
 	public static boolean isEmpty(String value) {
 		if (value == null || value.trim().equals("") || value.trim() == "null" || value.trim().length() <= 0) {
 			return true;
 		}
 		return false;
+	}
+	
+	public static String getNotNullStr(String value) {
+		return isEmpty(value)?"":value;
 	}
 
 	public static String toUTF8(String str) {

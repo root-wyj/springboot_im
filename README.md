@@ -28,6 +28,8 @@ ps: git常用命令
 - [（七）默认日志框架配置](http://www.cnblogs.com/zheting/p/6707041.html)
 - [（八）数据存储篇-SQL关系型数据库之JdbcTemplate的使用](http://www.cnblogs.com/zheting/p/6707042.html)
 
+<br>
+[springboot打包发布教程](https://www.cnblogs.com/honger/p/6886017.html) 
 
 阿里druid 数据库连接池与tomcat-jdbc连接池比较：http://www.cnblogs.com/barrywxx/p/6343303.html。
 > 结论是：druid在连接次数多了之后，比如上万，平均时间相比于tomcat-jdbc更稳定一点，用时少一点。如果连接次数没有很多的话，tomcat-jdbc用时更少。

@@ -29,15 +29,21 @@
 
 	<script>
 
+		var isInRoom = false;
+	
         var userName = 'user' + Math.floor((Math.random()*1000)+1);
 
 		var socket =  io.connect('http://localhost:9090?token='+userName);
 
 		socket.on('connect', function() {
-			output('<span class="connect-msg">Client has connected to the server!</span>');
+			output('<span class="connect-msg">'+userName+' has connected to the server!</span>');
 		});
 
-		socket.on('broadcastEvent', function(data) {
+		socket.on('onTalk', function(data) {
+			output('<span class="username-msg">' + data + '</span> ');
+		});
+		
+		socket.on('onRoomBroadcast', function(data) {
 			output('<span class="username-msg">' + data + ':</span> ');
 		});
 
@@ -51,11 +57,21 @@
 
 		function sendMessage() {
                         var message = $('#msg').val();
+                        var room = "";
+                        if (isInRoom) {
+                        	room = "room1";
+                        }
                         $('#msg').val('');
 
-                        var jsonObject = {userName: userName,
-                                          message: message};
-                        socket.emit('test', jsonObject);
+                        var jsonObject = {room: room,
+                                          content: message};
+                        socket.emit('talk', jsonObject);
+		}
+		
+		function inRoom() {
+			var jsonObject = {userName:userName, message: inRoom};
+			isInRoom = true;
+			socket.emit('inRoom', jsonObject);
 		}
 
 		function output(message) {
@@ -85,6 +101,7 @@
            <input id="msg" class="input-xlarge" type="text" placeholder="Type something..."/>
            <button type="button" onClick="sendMessage()" class="btn" id="send">Send</button>
            <button type="button" onClick="sendDisconnect()" class="btn">Disconnect</button>
+           <button type="button" onClick="inRoom()" class="btn">InRoom</button>
         </form>
 
 

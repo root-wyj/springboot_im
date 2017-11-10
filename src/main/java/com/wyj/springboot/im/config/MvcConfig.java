@@ -5,8 +5,6 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.web.servlet.config.annotation.*;
 
 import com.wyj.springboot.im.authorize.AnalyzeInterceptor;
-import org.springframework.web.servlet.resource.DefaultServletHttpRequestHandler;
-import org.springframework.web.servlet.view.InternalResourceViewResolver;
 
 /**
  * 
@@ -34,9 +32,5 @@ public class MvcConfig extends WebMvcConfigurerAdapter{
 //		registry.addResourceHandler("/static/").addResourceLocations("classpath:/static/");
 //		super.addResourceHandlers(registry);
 //	}
-//
-//	@Override
-//	public void configureDefaultServletHandling(DefaultServletHandlerConfigurer configurer) {
-//		configurer.enable();
-//	}
+
 }

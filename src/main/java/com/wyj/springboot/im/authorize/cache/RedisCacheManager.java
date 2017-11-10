@@ -1,5 +1,6 @@
 package com.wyj.springboot.im.authorize.cache;
 
+import java.util.Set;
 import java.util.concurrent.TimeUnit;
 
 import javax.annotation.Resource;
@@ -23,15 +24,9 @@ public class RedisCacheManager<K, V> implements IRedisCache<K, V>{
 		};
 	};
 	
-	private long timeout = DEFAULT_TIMEOUT;
+	protected long timeout = DEFAULT_TIMEOUT;
 	
 	public static final long DEFAULT_TIMEOUT = -1;
-	
-//	@PostConstruct
-//	private void init() {
-//		redisTemplate.setKeySerializer(new StringRedisSerializer());
-//		redisTemplate.setValueSerializer(new Jackson2JsonRedisSerializer<>(Object.class));
-//	}
 	
 	public RedisCacheManager(long timeout){
 		this.timeout = timeout;
@@ -60,6 +55,10 @@ public class RedisCacheManager<K, V> implements IRedisCache<K, V>{
 
 	@Override
 	public V get(K key) {
+		return redisTemplate.opsForValue().get(serilizableKey(key));
+	}
+	
+	public V getAndUpdateTTL(K key) {
 		V value = redisTemplate.opsForValue().get(serilizableKey(key));
 		if (value != null && timeout > 0) {
 			redisTemplate.expire(serilizableKey(key), timeout, TimeUnit.SECONDS);
@@ -70,6 +69,18 @@ public class RedisCacheManager<K, V> implements IRedisCache<K, V>{
 	@Override
 	public void del(K key) {
 		redisTemplate.delete(serilizableKey(key));
+	}
+	
+	public long getTTL(K key) {
+		return redisTemplate.getExpire(serilizableKey(key), TimeUnit.SECONDS);
+	}
+	
+	public int delAll(String pattern) {
+		Set<String> keys = redisTemplate.keys(pattern);
+		for (String key : keys) {
+			redisTemplate.delete(key);
+		}
+		return keys.size();
 	}
 
 }

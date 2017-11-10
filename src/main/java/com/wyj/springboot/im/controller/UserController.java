@@ -8,7 +8,6 @@ import javax.servlet.http.HttpServletResponse;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.redis.core.RedisTemplate;
-import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -23,6 +22,7 @@ import com.wyj.springboot.im.authorize.cookie.UserCookieContainer;
 import com.wyj.springboot.im.entity.User;
 import com.wyj.springboot.im.service.IRedisService;
 import com.wyj.springboot.im.service.UserService;
+import com.wyj.springboot.im.config.BeanIocConfig;
 
 /**
  * 
@@ -37,9 +37,9 @@ public class UserController {
 	@Autowired
 	UserService userService;
 	
-	@Autowired
+	@Resource(name=BeanIocConfig.USER_CACHE)
 	RedisCacheManager<String, User> userCache;
-	@Autowired
+	@Resource(name=BeanIocConfig.LOGIN_TIMES_CACHE)
 	LongRedisCacheManager<User> loginTimeCache;
 	
 	@Resource
@@ -63,8 +63,8 @@ public class UserController {
 		response.addCookie(
 				CookieFactory.getUserCookie(new UserCookieContainer(uuid, userInfo, System.currentTimeMillis())));
 		// 添加到cache中
-//		userCache.set(uuid, userInfo);
-//		loginTimeCache.increment(userInfo);
+		userCache.set(uuid, userInfo);
+		loginTimeCache.increment(userInfo);
 
 		response.addCookie(CookieFactory.getUsernameCookie(userInfo.getName()));
 

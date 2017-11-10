@@ -12,6 +12,7 @@ import org.springframework.data.redis.cache.RedisCacheManager;
 import org.springframework.data.redis.connection.RedisConnectionFactory;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.data.redis.serializer.Jackson2JsonRedisSerializer;
+import org.springframework.data.redis.serializer.StringRedisSerializer;
 
 import com.fasterxml.jackson.annotation.JsonAutoDetect;
 import com.fasterxml.jackson.annotation.PropertyAccessor;
@@ -24,7 +25,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
  */
 
 @Configuration
-@EnableCaching
+@EnableCaching //该注解 用于@Cache 这种数据库缓存使用的
 public class RedisConfig extends CachingConfigurerSupport{
     
     @Bean
@@ -62,6 +63,7 @@ public class RedisConfig extends CachingConfigurerSupport{
         om.enableDefaultTyping(ObjectMapper.DefaultTyping.NON_FINAL);
         jackson2JsonRedisSerializer.setObjectMapper(om);
         template.setValueSerializer(jackson2JsonRedisSerializer);
+        template.setKeySerializer(new StringRedisSerializer());
         template.afterPropertiesSet();
         return template;
     }

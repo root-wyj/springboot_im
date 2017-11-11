@@ -1,9 +1,12 @@
 package com.wyj.springboot.im.service.imp;
 
+import javax.annotation.Resource;
+
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Service;
 
+import com.wyj.springboot.im.authorize.cache.RedisCacheManager;
+import com.wyj.springboot.im.config.BeanIocConfig;
 import com.wyj.springboot.im.entity.User;
 import com.wyj.springboot.im.jpa.UserRepository;
 import com.wyj.springboot.im.service.UserService;
@@ -20,8 +23,8 @@ public class UserServiceImp implements UserService{
 	@Autowired
 	UserRepository userRepository;
 	
-	@Autowired
-	RedisTemplate<String, User> redisTemplate;
+	@Resource(name=BeanIocConfig.USER_CACHE)
+	RedisCacheManager<String, User> userCache;
 	
 	public boolean isExist(String name, String password) {
 		return null!=userRepository.findUser(name, password);
@@ -34,10 +37,7 @@ public class UserServiceImp implements UserService{
 	}
 	
 	private void setUserInRedis(User user) {
-		redisTemplate.opsForValue().set(user.getName(), user);
+		userCache.set(user.getName(), user);
 	}
 	
-//	public boolean addUser(String name, String password) {
-		
-//	}
 }

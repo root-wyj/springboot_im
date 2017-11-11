@@ -29,7 +29,10 @@ ps: git常用命令
 - [（八）数据存储篇-SQL关系型数据库之JdbcTemplate的使用](http://www.cnblogs.com/zheting/p/6707042.html)
 
 <br>
-[springboot打包发布教程](https://www.cnblogs.com/honger/p/6886017.html) 
+[Spring Boot加载配置文件](https://www.cnblogs.com/moonandstar08/p/7368292.html)
+[springboot打包发布教程](https://www.cnblogs.com/honger/p/6886017.html) <br>
+[Spring Boot干货系列：常用属性汇总](http://tengj.top/2017/02/28/springbootconfig/)
+
 
 阿里druid 数据库连接池与tomcat-jdbc连接池比较：http://www.cnblogs.com/barrywxx/p/6343303.html。
 > 结论是：druid在连接次数多了之后，比如上万，平均时间相比于tomcat-jdbc更稳定一点，用时少一点。如果连接次数没有很多的话，tomcat-jdbc用时更少。
@@ -37,6 +40,11 @@ ps: git常用命令
 druid语法可以参考 [Druid连接池-阿里巴巴开源JDBC组件](http://blog.csdn.net/chenleixing/article/details/45003753)
 
 [关于Spring-boot的debug调试](https://www.2cto.com/kf/201708/668239.html)
+
+### springboot 中踩过的坑
+
+##### @Value
+
 
 ### netty-socketio 学习资源
 初级教程，也是[源码git项目](https://github.com/mrniko/netty-socketio)推荐的[demo](https://github.com/mrniko/netty-socketio-demo)<br>

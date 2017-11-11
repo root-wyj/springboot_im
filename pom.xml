@@ -53,11 +53,11 @@
 		</dependency>
 		
 		<!-- 集成热更新需要的依赖包 -->
-		<dependency>
+		<!-- <dependency>
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-devtools</artifactId>
 			<optional>true</optional>
-		</dependency>
+		</dependency> -->
 		
 		<!-- 这里虽然没有配置版本号，而且也没有引用版本号，但是不出错，
 			是因为在org.springframework.boot:spring-boot-dependencies:xx.pom中已经默认配置了mysql的版本号，并在里面引用上了 -->
@@ -109,11 +109,10 @@
 				<configuration>
             		<jvmArguments>-Xdebug -Xrunjdwp:transport=dt_socket,server=y,suspend=y,address=5005</jvmArguments>
             		<!-- 集成热更新需要的配置 -->
-            		<fork>true</fork>
+            		<fork>false</fork>
             	</configuration>
 			</plugin>
 		</plugins>
 	</build>
-
 
 </project>

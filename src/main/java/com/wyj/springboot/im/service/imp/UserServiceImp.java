@@ -29,7 +29,7 @@ public class UserServiceImp implements UserService{
 	
 	public User getUser(String name) {
 		User u = userRepository.findByName(name);
-//		setUserInRedis(u);
+		setUserInRedis(u);
 		return u;
 	}
 	

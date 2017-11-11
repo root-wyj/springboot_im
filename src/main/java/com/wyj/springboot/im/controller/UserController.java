@@ -31,7 +31,7 @@ import com.wyj.springboot.im.service.UserService;
  */
 
 @RestController
-@RequestMapping(value = "user",produces="application/json;charset=utf-8")
+@RequestMapping(produces="application/json;charset=utf-8")
 public class UserController {
 	
 	@Autowired
@@ -63,8 +63,8 @@ public class UserController {
 		response.addCookie(
 				CookieFactory.getUserCookie(new UserCookieContainer(uuid, userInfo, System.currentTimeMillis())));
 		// 添加到cache中
-//		userCache.set(uuid, userInfo);
-//		loginTimeCache.increment(userInfo);
+		userCache.set(uuid, userInfo);
+		loginTimeCache.increment(userInfo);
 
 		response.addCookie(CookieFactory.getUsernameCookie(userInfo.getName()));
 

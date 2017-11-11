@@ -64,7 +64,10 @@ public class NettySocketServer {
 	 * 
 	 * BroadcastOperations 就是一个广播器，里面保存了SocketIoClient的列表和StoreFactory（暂时认为是一个发布消息的类），所以如果想给某一类用户发消息，就可以把这类用户放入到这个类的
 	 * 		实例中，然后一起发送。
-	 * Namespace 里面保存房间信息，
+	 *
+	 * Namespace 里面保存房间信息，通过String类型的房间名来区别房间，Namespace通过server.getRoomOperations("room1").sendEvent 来给某房间的所有用户发送消息，
+	 * 		SocketIOClient 通过方法 socketIOClient.joinRoom("room1"); 来加入房间。 房间与用户在里面通过两个Collection来绑定，可以很方便的查找房间里的所有用户
+	 * 		也可以通过用户查找他在的所有房间。默认的所有用户都会进入 Namespace.DEFAULT_NAME("")，可以理解为是大厅房间。
 	 * 
 	 * http://www.jb51.net/article/108633.htm
 	 * 

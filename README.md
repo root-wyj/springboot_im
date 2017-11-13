@@ -43,7 +43,7 @@ druid语法可以参考 [Druid连接池-阿里巴巴开源JDBC组件](http://blo
 
 ### springboot 中踩过的坑
 
-##### @Value
+#### @Value
 
 
 ### netty-socketio 学习资源
@@ -51,4 +51,25 @@ druid语法可以参考 [Druid连接池-阿里巴巴开源JDBC组件](http://blo
 因为没有guide，所以只能多看项目，一下是在网上参考的一些项目，给了我很大的帮助：
 - [Spring Boot实战之netty-socketio实现简单聊天室(给指定用户推送消息)](http://blog.csdn.net/sun_t89/article/details/52060946)
 - [git 上的一个用了分布式和分布式锁的 NettySocketServer](https://github.com/wangnamu/NettySocketioServer) [该类MySocketIOServer](https://github.com/wangnamu/NettySocketioServer/blob/master/NettySocketioServer/src/main/java/com/ufo/NettySocketioServer/MySocketIOServer.java)是比较重要的一个类
+- [Spring Boot实战之netty-socketio实现简单聊天室](http://blog.csdn.net/sun_t89/article/details/52060946)
 
+#### 基本使用
+这里总结一下NettySocketIO的基本使用，只是说一下大概流程，具体细节实现看代码：
+
+1. 配置`com.corundumstudio.socketio.Configuration` 并实例化 `SocketIOServer server = new SocketIOServer(config)`。
+2. 通过`com.corundumstudio.socketio.annotation.OnConnect` 等注解 来实现监听socket连接、断开、接收消息等。然后通过依赖注入 `new SpringAnnotationScanner(SocketIOServer socketIOServer)` ，通过该类来扫描`@OnConnect`, `OnEvent`等注解，注册正真的监听器。
+3. 当然了，也可以通过 `Configuration.setXxxListener` 和 `SocketIOServer.addEventListener` 来注册监听器，算是2步骤的扩展。
+4. 最后客户端就可以通过 `io.connect('http://localhost:9090?token='+userName);` 来连接到socket，然后就可以通信了。因为NettySocketIO是通过集成`socket.io`这个库来实现socket的，所以客户端语言不限，但是必须也要使用socketio的库，[socketio官网](https://socket.io/)
+
+#### 理解NettySocketIO server框架
+NettySocketIO是一个集成了Netty服务器和socketio的，很方便实现长连接的框架。<br><br>
+
+Netty服务器是一个https://www.zhihu.com/question/24322387
+http://blog.csdn.net/z69183787/article/details/52505249
+http://blog.csdn.net/z69183787/article/details/52505163
+NettySocketIO是一个开源框架，非要说什么官网的话 怕就是上面说道的他的git地址了，
+
+
+
+### 炸金花游戏逻辑
+[扎金花大小比较算法(Java版)](http://blog.csdn.net/dobuy/article/details/31521609)

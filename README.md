@@ -31,6 +31,7 @@ ps: git常用命令
 <br>
 [Spring Boot加载配置文件](https://www.cnblogs.com/moonandstar08/p/7368292.html)
 [springboot打包发布教程](https://www.cnblogs.com/honger/p/6886017.html) <br>
+java 后来运行 nohup java -jar test.jar &
 [Spring Boot干货系列：常用属性汇总](http://tengj.top/2017/02/28/springbootconfig/)
 
 

@@ -20,12 +20,12 @@ import com.alibaba.fastjson.JSONObject;
  */
 public class XmlUtils {
 	private static Logger logger = LoggerFactory.getLogger(XmlUtils.class);
-	
+
 	public static JSONObject xml2Json(String xmlStr) {
 		if (isEmpty(xmlStr)) {
 			return null;
 		}
-		
+
 		Document doc;
 		try {
 			doc = DocumentHelper.parseText(xmlStr);
@@ -46,7 +46,7 @@ public class XmlUtils {
 				json.put("@" + attr.getName(), attr.getValue());
 			}
 		}
-		
+
 		@SuppressWarnings("unchecked")
 		List<Element> chdEl = element.elements();
 		if (chdEl.isEmpty() && !isEmpty(element.getText())) {// 如果没有子元素,只有一个值
@@ -85,14 +85,14 @@ public class XmlUtils {
 						json.put("@" + attr.getName(), attr.getValue());
 					}
 				}
-				
+
 				if (!e.getText().isEmpty()) {
 					json.put(e.getName(), e.getText());
 				}
 			}
 		}
 	}
-	
+
 	private static boolean isEmpty(String str) {
 		if (str == null || str.trim().isEmpty() || "null".equals(str)) {
 			return true;

@@ -29,10 +29,10 @@ ps: git常用命令
 - [（八）数据存储篇-SQL关系型数据库之JdbcTemplate的使用](http://www.cnblogs.com/zheting/p/6707042.html)
 
 <br>
-[Spring Boot加载配置文件](https://www.cnblogs.com/moonandstar08/p/7368292.html)
+[Spring Boot加载配置文件](https://www.cnblogs.com/moonandstar08/p/7368292.html)<br>
 [springboot打包发布教程](https://www.cnblogs.com/honger/p/6886017.html) <br>
-java 后来运行 nohup java -jar test.jar &
-[Spring Boot干货系列：常用属性汇总](http://tengj.top/2017/02/28/springbootconfig/)
+java 后台运行 `nohup java -jar test.jar &` <br>
+[Spring Boot干货系列：常用属性汇总](http://tengj.top/2017/02/28/springbootconfig/)<br><br>
 
 
 阿里druid 数据库连接池与tomcat-jdbc连接池比较：http://www.cnblogs.com/barrywxx/p/6343303.html。
@@ -65,11 +65,30 @@ druid语法可以参考 [Druid连接池-阿里巴巴开源JDBC组件](http://blo
 #### 理解NettySocketIO server框架
 NettySocketIO是一个集成了Netty服务器和socketio的，很方便实现长连接的框架。<br><br>
 
-Netty服务器是一个https://www.zhihu.com/question/24322387
-http://blog.csdn.net/z69183787/article/details/52505249
-http://blog.csdn.net/z69183787/article/details/52505163
-NettySocketIO是一个开源框架，非要说什么官网的话 怕就是上面说道的他的git地址了，
+Netty服务器是一个使用了java `nio`-非阻塞流来处理http请求的，相比于tomcat，tomcat是一个线程处理一个请求，当这个请求比较慢的时候（如网络状态不好）这个线程也会阻塞，直到等到客户端数据，而Netty使用的同步非阻塞IO开启一个线程就可以处理多个请求，所以Netty能够支持高并发，可达百万级。而且Netty减少了拷贝，支持多种协议包括websocket。<br>
 
+> Netty采用的是 `NIO+Reactor` 的线程模型。
+
+更多了解Netty、NIO、Reactor线程模型的，可以参考下面的文章：<br>
+- [Netty的作用与理解](https://www.zhihu.com/question/24322387)
+- [NIO与IO详细比较（有代码和实例数据）](http://blog.csdn.net/sean417/article/details/69817690)
+- [Netty实现原理解析 -- Netty实现原理浅析](http://www.importnew.com/15656.html)
+- [Netty源码解读（四）Netty与Reactor模式](http://ifeve.com/netty-reactor-4/)
+- [netty与websocket通信demo](http://blog.csdn.net/z69183787/article/details/52505163)
+- [Netty-WebSocket长连接推送服务](http://blog.csdn.net/z69183787/article/details/52505249)
+- [NIO与IO详细比较（有代码和实例数据）](http://blog.csdn.net/sean417/article/details/69817690)
+- [例子说明 -- 同步，异步，阻塞，非阻塞，BIO，AIO，NIO 理解]()
+- [例子说明阻塞非阻塞 同步异步](http://www.jianshu.com/p/e9c6690c0737)
+- [详细介绍 -- 阻塞和非阻塞，同步和异步](https://www.cnblogs.com/George1994/p/6702084.html)
+- [IO - 同步，异步，阻塞，非阻塞 ](http://blog.csdn.net/historyasamirror/article/details/5778378)
+- [高性能IO设计 & Java NIO & 同步/异步 阻塞/非阻塞 Reactor/Proactor](https://www.cnblogs.com/charlesblc/p/6072827.html)
+
+<br><br>
+NettySocketIO是一个开源框架，非要说什么官网的话 怕就是上面说到的他的git地址了。而且自己去找NettySocketIO的使用DEMO也是少的可怜，文档更是没有，所以只能自己去研究了。博主通过研究NettySocketIO源码，总结以下：
+- **`Namespace`** : `Namespace implements SocketIONamespace`。而且也是`SocketIONamespace`的唯一实现，SocketIOServer中声明了它的实例 `mainNamespace`，里面保存了 所有的监听器、所有的客户端、客户端与Room的对应关系等数据，可以说他保存着SocketServer的用户所有信息。Namespace都会有一个名字，新创建一个Server的时候，都会默认创建一个名字为`""`的Namespace。
+- **`NamespaceHub`** : `SocketIOServer`中有它的一个实例，叫`namespaceHub`。保存了该server的所有`Namespace`（虽然现在还不知道第二个create第二个Namespace用来干什么）和 该Server的配置
+- **room** : 房间。`NettySocketIO`已经提供了房间的功能。可以通过String 类型的房间名来给所有在该房间里的所有用户发送消息。可以通过 `socketIOClient.joinRoom("room1");`来加入房间，也可以通过`SocketIOServer.getNamespace(xx).joinRoom()`方法加入房间。房间信息，主要就保存在`Namespace`的`roomClients`和`clientRooms`中。默认的所有用户都会进入 Namespace.DEFAULT_NAME("")，可以理解为是大厅房间。
+- **`BroadcastOperations`** : BroadcastOperations 就是一个广播器，里面保存了SocketIoClient的列表和StoreFactory（暂时认为是一个发布消息的类），所以如果想给某一类用户发消息，就可以把这类用户放入到这个类的实例中，然后一起发送。给某个房间的所有用户发信息`server.getRoomOperations("roomName").sendEvent()`
 
 
 ### 炸金花游戏逻辑

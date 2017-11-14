@@ -7,7 +7,6 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -76,37 +75,4 @@ public class UserController {
 		return JSON.toJSONString(userContext.get());
 	}
 	
-	@GetMapping("/redis/set")
-	public String putInRedis(@RequestParam(name="key") String key, @RequestParam("value") String value) {
-		return redisService.set(key, value)+"";
-	}
-	
-	@GetMapping("/redis/get")
-	public String getInRedis(@RequestParam(name="key") String key) {
-		return redisService.get(key);
-	}
-	
-	@GetMapping("/redis/expire")
-	public String putInRedis(@RequestParam(name="key") String key, @RequestParam("expire") long expire) {
-		return redisService.expire(key, expire)+"";
-	}
-	
-	@GetMapping("/redis/del")
-	public String delInRedis(@RequestParam(name="key")String key) {
-		redisService.del(key);
-		return "success";
-	}
-	
-	@GetMapping("/redis/delu")
-	public String redisDelUser(@RequestParam(name="key") String key) {
-		redisTemplate.delete(key);
-		return "success";
-	}
-	
-	@Autowired
-	RedisTemplate<String, User> redisTemplate;
-	@RequestMapping("/redis/user/get")
-	public String redisGetUser(@RequestParam(name="key")String key) {
-		return JSON.toJSONString(redisTemplate.opsForValue().get(key));
-	}
 }

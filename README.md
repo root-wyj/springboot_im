@@ -32,9 +32,13 @@ ps: git常用命令
 [Spring Boot加载配置文件](https://www.cnblogs.com/moonandstar08/p/7368292.html)<br>
 [springboot打包发布教程](https://www.cnblogs.com/honger/p/6886017.html) <br>
 java 后台运行 `nohup java -jar test.jar &` <br>
-[Spring Boot干货系列：常用属性汇总](http://tengj.top/2017/02/28/springbootconfig/)<br><br>
+[Spring Boot干货系列：常用属性汇总](http://tengj.top/2017/02/28/springbootconfig/)
 
+<br><br>
+Spring-jpa学习
+- [Spring Boot系列(五)：spring data jpa的使用](https://zhuanlan.zhihu.com/p/25000309)
 
+<br><br>
 阿里druid 数据库连接池与tomcat-jdbc连接池比较：http://www.cnblogs.com/barrywxx/p/6343303.html。
 > 结论是：druid在连接次数多了之后，比如上万，平均时间相比于tomcat-jdbc更稳定一点，用时少一点。如果连接次数没有很多的话，tomcat-jdbc用时更少。
 
@@ -45,6 +49,19 @@ druid语法可以参考 [Druid连接池-阿里巴巴开源JDBC组件](http://blo
 ### springboot 中踩过的坑
 
 #### @Value
+之前采用这种方式注入，然后该类里面的成员总是为null，我现在只想说， 这TMD 不是废话么！！！能TM有值么！！ 对象你都实例化完成了，注入到系统中了，你还让系统怎么给这个对象赋值，使用@Component完成注入(好像这种认识并不正确)<br>
+
+```
+@Bean
+public NettySocketServer socketServer() {
+	return new NettySocketServer();
+}
+
+```
+<br>
+
+后来发现了问题的真正所在 -> 我tm在构造方法中使用成员变量  还tm问 为什么一直为空，当然tmd为空了，对象还没初始化完呢，怎么能初始化里面的成员变量，真tmd愚啊，后来使用了`@PostConstruct`注解 解决了该问题 另外一个是`@PreDestroy`
+
 
 
 ### netty-socketio 学习资源

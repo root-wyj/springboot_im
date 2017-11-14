@@ -10,7 +10,7 @@ import javax.persistence.Id;
  * @author wuyingjie
  * @date 2017年9月28日
  */
-@Entity
+@Entity()
 public class User {
 	@Id
 	@GeneratedValue

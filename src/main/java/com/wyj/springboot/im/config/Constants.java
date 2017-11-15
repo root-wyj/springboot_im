@@ -8,7 +8,7 @@ package com.wyj.springboot.im.config;
 
 public class Constants {
 	/** 用户过期时间 单位 s */
-	public static final int COOKIE_USER_EXPIRED = 20*60;
+	public static final int HEADER_USER_TOKEN_EXPIRED = 30;
 	
 	
 	

@@ -20,31 +20,25 @@ import com.wyj.springboot.im.tools.XXTEA;
  * @date 2017年7月28日
  */
 @Component
-public class UserCookieContainer{
-	private String uuid;
-	private User user;
+public class UserHeaderContainer {
+	private long userId;
 	private long timestamp;
 	
-	public UserCookieContainer(String uuid, User user, long timestamp) {
-		this.uuid = uuid;
-		this.user = user;
+	public UserHeaderContainer(long userId, long timestamp) {
+		this.userId = userId;
 		this.timestamp = timestamp;
 	}
-	
-	public String getUuid() {
-		return uuid;
+
+	public long getUserId() {
+		return userId;
 	}
-	
-	public User getUser() {
-		return user;
-	}
-	
+
 	public long getTimestamp() {
 		return timestamp;
 	}
 	
 	
-	static Logger logger = LoggerFactory.getLogger(UserCookieContainer.class);
+	static Logger logger = LoggerFactory.getLogger(UserHeaderContainer.class);
 	
 	
 	@Autowired
@@ -52,38 +46,40 @@ public class UserCookieContainer{
 	
 	static RedisCacheManager<String, User> sUserCache;
 	
-	public UserCookieContainer() {}
+	public UserHeaderContainer() {}
 	
 	@PostConstruct
 	private void init() {
 		sUserCache = userCache;
 	}
 	
-	public static String generatorKey(UserCookieContainer c) {
-		if (c == null || StringUtil.isEmpty(c.uuid) || c.user == null || c.user.getId() <= 0) {
+	public static String generatorKey(UserHeaderContainer c) {
+		if (c == null || c.userId <= 0) {
 			return "";
 		}
-		
-		long timestamp = System.currentTimeMillis();
+
+		if (c.timestamp <= 0) {
+			c.timestamp = System.currentTimeMillis();
+		}
 		String encrytStr = "";
 		try{
-			encrytStr = XXTEA.encrypt(timestamp+":"+c.user.getId()+":"+c.uuid);
+			encrytStr = XXTEA.encrypt(c.timestamp+":"+c.userId+":XXTEA");
 		} catch(Exception e) {
-			logger.error("加密生成UserCookieContainer的时候出错，error:"+e.getMessage()+". UserCookieContainer:{}"+JSON.toJSONString(c), e);
+			logger.error("加密生成UserCookieContainer的时候出错，error:"+e.getMessage()+". UserHeaderContainer:{}"+JSON.toJSONString(c), e);
 		}
 		
-		return timestamp+":"+encrytStr;
+		return c.timestamp+":"+encrytStr;
 	}
 	
-	public static UserCookieContainer resolveUserCookie(String key) {
+	public static UserHeaderContainer resolveUserCookie(String key) {
 
-		UserCookieContainer result = null;
+		UserHeaderContainer result = null;
 		if (StringUtil.isEmpty(key)) return null;
 		
 		String[] values = key.split(":");
 		try {
-			if (Long.valueOf(values[0])+Constants.COOKIE_USER_EXPIRED*1000 < System.currentTimeMillis()) {
-				logger.info("cookie过期");
+			if (Long.valueOf(values[0])+Constants.HEADER_USER_TOKEN_EXPIRED*1000 < System.currentTimeMillis()) {
+				logger.info("user token过期");
 				return null;
 			}
 			
@@ -91,19 +87,20 @@ public class UserCookieContainer{
 			String[] desValues = XXTEA.decrypt(values[1]).split(":");
 			//验证时间戳是否一致，是否明文或密文的时间戳被篡改
 			if (!desValues[0].equals(values[0])) {
-				logger.warn("cookie 被篡改");
+				logger.warn("token 被篡改");
 				return null;
 			}
 			String userId = desValues[1];
 			
 			//如果有这条数据 这时候已经更新了服务器方面的 cache失效时间
-			User user = sUserCache.get(desValues[2].toString());
+//			User user = sUserCache.get(desValues[2].toString());
 			//检查是否有该用户
-			if (user == null) {
-				logger.warn("从 cookie 中解析出来的 userid={} 在数据库中找不到", userId);
-				return null;
-			}
-			result = new UserCookieContainer(desValues[2], user, StringUtil.toLong(values[0], 0L));
+//			if (user == null) {
+//				logger.warn("从 cookie 中解析出来的 userid={} 在数据库中找不到", userId);
+//				return null;
+//			}
+			result = new UserHeaderContainer();
+			result.userId = Long.valueOf(userId);
 		} catch (Exception e) {
 			logger.error("解析cookie出错，"+e.getMessage(), e);
 			return null;

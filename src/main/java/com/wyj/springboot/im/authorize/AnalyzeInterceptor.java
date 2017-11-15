@@ -10,9 +10,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.servlet.HandlerInterceptor;
 import org.springframework.web.servlet.ModelAndView;
 
-import com.wyj.springboot.im.authorize.cookie.CookieFactory;
-import com.wyj.springboot.im.authorize.cookie.EmptyCookieFactory;
-import com.wyj.springboot.im.authorize.cookie.UserCookieContainer;
+import com.wyj.springboot.im.authorize.cookie.HeaderFactory;
+import com.wyj.springboot.im.authorize.cookie.EmptyHeaderFactory;
+import com.wyj.springboot.im.authorize.cookie.UserHeaderContainer;
 import com.wyj.springboot.im.entity.User;
 import com.wyj.springboot.im.tools.StringUtil;
 
@@ -46,17 +46,17 @@ public class AnalyzeInterceptor implements HandlerInterceptor{
 		
 		if (cookies != null && cookies.length > 0) {
 			for(Cookie c : cookies) {
-				if (c.getName().equals(CookieFactory.COOKIE_KEY_USER_SESSION)) {
+				if (c.getName().equals(HeaderFactory.HEADER_KEY_USER_TOKEN)) {
 					userSessionCookie = c.getValue();
-				} else if (c.getName().equals(CookieFactory.COOKIE_KEY_USER_NAME)) {
+				} else if (c.getName().equals(HeaderFactory.COOKIE_KEY_USER_NAME)) {
 					usernameCookie = c.getValue();
 				}
 			}
 		}
 		
 		if (!StringUtil.isEmpty(userSessionCookie)) {
-			UserCookieContainer container = null;
-			if ((container = UserCookieContainer.resolveUserCookie(userSessionCookie)) != null) {
+			UserHeaderContainer container = null;
+			if ((container = UserHeaderContainer.resolveUserCookie(userSessionCookie)) != null) {
 				setUser(container.getUser(), container.getUuid());
 				userId = container.getUser().getId();
 
@@ -65,12 +65,12 @@ public class AnalyzeInterceptor implements HandlerInterceptor{
 
 				if (StringUtil.isEmpty(usernameCookie)) {
 //					UserInfo userInfo = userService.getUserInfoById(userId);
-//					response.addCookie(CookieFactory.getUsernameCookie(userInfo.getNickname()));
-//					response.addCookie(CookieFactory.getUserIconCookie(userInfo.getIcon()));
+//					response.addCookie(HeaderFactory.getUsernameCookie(userInfo.getNickname()));
+//					response.addCookie(HeaderFactory.getUserIconCookie(userInfo.getIcon()));
 				}
 
 			} else {
-				response.addCookie(EmptyCookieFactory.getEmptyUserCookie());
+				response.addCookie(EmptyHeaderFactory.getEmptyUserCookie());
 			}
 		}
 		
@@ -79,7 +79,7 @@ public class AnalyzeInterceptor implements HandlerInterceptor{
 			userContext.remove();
 			
 			if (!StringUtil.isEmpty(usernameCookie)) {
-				response.addCookie(EmptyCookieFactory.getEmptyUsernameCookie());
+				response.addCookie(EmptyHeaderFactory.getEmptyUsernameCookie());
 			}
 		}
 		
@@ -104,7 +104,7 @@ public class AnalyzeInterceptor implements HandlerInterceptor{
 		userContext.set(user);
 	}
 	
-//	private void updateUserCookie(UserCookieContainer container, HttpServletResponse response) {
+//	private void updateUserCookie(UserHeaderContainer container, HttpServletResponse response) {
 //		
 //		if (container == null || StringUtil.isEmpty(container.getUuid()) || container.getUser() == null || container.getUser().getUserId() <= 0) {
 //			return ;
@@ -115,7 +115,7 @@ public class AnalyzeInterceptor implements HandlerInterceptor{
 //			return ;
 //		}
 //		
-//		response.addCookie(CookieFactory.getUserCookie(new UserCookieContainer(container.getUuid(), container.getUser(), now)));
+//		response.addCookie(HeaderFactory.getUserHeader(new UserHeaderContainer(container.getUuid(), container.getUser(), now)));
 //	}
 
 }

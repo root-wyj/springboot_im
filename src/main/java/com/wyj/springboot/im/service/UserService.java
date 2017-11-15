@@ -9,7 +9,7 @@ import com.wyj.springboot.im.entity.User;
  */
 
 public interface UserService{
-	boolean isExist(String name, String password);
+	boolean isExist(String name);
 	
 	User getUser(String name);
 }

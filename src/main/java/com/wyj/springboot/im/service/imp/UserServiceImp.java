@@ -26,18 +26,20 @@ public class UserServiceImp implements UserService{
 	@Resource(name=BeanIocConfig.USER_CACHE)
 	RedisCacheManager<String, User> userCache;
 	
-	public boolean isExist(String name, String password) {
-		return null!=userRepository.findUser(name, password);
+	public boolean isExist(String name) {
+		return null!=userRepository.findByName(name);
+	}
+	
+	public boolean isExist(long id) {
+		return userRepository.exists(id);
+	}
+	
+	public User getUser(long id) {
+		return userRepository.findOne(id);
 	}
 	
 	public User getUser(String name) {
-		User u = userRepository.findByName(name);
-		setUserInRedis(u);
-		return u;
-	}
-	
-	private void setUserInRedis(User user) {
-		userCache.set(user.getName(), user);
+		return userRepository.findByName(name);
 	}
 	
 }

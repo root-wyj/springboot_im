@@ -2,6 +2,8 @@ package com.wyj.springboot.im.service.imp;
 
 import javax.annotation.Resource;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -20,7 +22,9 @@ import com.wyj.springboot.im.service.UserService;
 
 @Service
 public class UserServiceImp implements UserService{
-	
+
+	private static Logger logger = LoggerFactory.getLogger(UserServiceImp.class);
+
 	@Autowired
 	UserRepository userRepository;
 	
@@ -41,6 +45,19 @@ public class UserServiceImp implements UserService{
 	
 	public User getUser(String name) {
 		return userRepository.findByName(name);
+	}
+
+	public long addUser(String name, String password) {
+		User user = new User();
+		user.setName(name);
+		user.setPassword(password);
+		User u = userRepository.save(user);
+		if (u != null) {
+			return u.getId();
+		} else {
+			logger.error("user注册出错，name:{}, password:{}, 数据库返回user:{}", name, password, u);
+			return 0;
+		}
 	}
 	
 }

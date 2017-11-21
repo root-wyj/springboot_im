@@ -12,4 +12,6 @@ public interface UserService{
 	boolean isExist(String name);
 	
 	User getUser(String name);
+
+	public long addUser(String name, String password);
 }

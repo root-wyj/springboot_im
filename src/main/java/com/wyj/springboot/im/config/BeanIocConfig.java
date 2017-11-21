@@ -8,6 +8,7 @@ import com.wyj.springboot.im.authorize.UserContext;
 import com.wyj.springboot.im.authorize.cache.KeySerilizable;
 import com.wyj.springboot.im.authorize.cache.LongRedisCacheManager;
 import com.wyj.springboot.im.authorize.cache.RedisCacheManager;
+import com.wyj.springboot.im.authorize.cache.keymodel.UserCacheKey;
 import com.wyj.springboot.im.entity.User;
 import com.wyj.springboot.im.socketnio.NettySocketServer;
 
@@ -53,11 +54,11 @@ public class BeanIocConfig {
 	public static final String USER_CACHE = "userCache";
 	
 	@Bean(name=USER_CACHE)
-	public RedisCacheManager<String, User> userCM() {
-		return new RedisCacheManager<String, User>(20*60, new KeySerilizable<String>() {
+	public RedisCacheManager<UserCacheKey, User> userCM() {
+		return new RedisCacheManager<UserCacheKey, User>(20*60, new KeySerilizable<UserCacheKey>() {
 			@Override
-			public String serilizableKey(String key) {
-				return USER_CACHE+"_"+key;
+			public String serilizableKey(UserCacheKey key) {
+				return USER_CACHE+"_"+key.getUserId()+"_"+key.getUuid();
 			}
 		});
 	}

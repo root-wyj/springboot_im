@@ -6,6 +6,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.wyj.springboot.im.authorize.cache.RedisCacheManager;
+import com.wyj.springboot.im.authorize.cache.keymodel.UserCacheKey;
 import com.wyj.springboot.im.config.BeanIocConfig;
 import com.wyj.springboot.im.entity.User;
 import com.wyj.springboot.im.jpa.UserRepository;
@@ -24,7 +25,7 @@ public class UserServiceImp implements UserService{
 	UserRepository userRepository;
 	
 	@Resource(name=BeanIocConfig.USER_CACHE)
-	RedisCacheManager<String, User> userCache;
+	RedisCacheManager<UserCacheKey, User> userCache;
 	
 	public boolean isExist(String name) {
 		return null!=userRepository.findByName(name);

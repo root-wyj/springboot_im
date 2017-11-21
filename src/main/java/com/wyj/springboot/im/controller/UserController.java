@@ -14,13 +14,13 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.alibaba.fastjson.JSON;
 import com.wyj.springboot.im.authorize.UserContext;
 import com.wyj.springboot.im.authorize.cache.LongRedisCacheManager;
 import com.wyj.springboot.im.authorize.cache.RedisCacheManager;
+import com.wyj.springboot.im.authorize.cache.keymodel.UserCacheKey;
 import com.wyj.springboot.im.authorize.cookie.CookieFactory;
 import com.wyj.springboot.im.authorize.cookie.UserCookieContainer;
 import com.wyj.springboot.im.entity.User;
@@ -45,7 +45,7 @@ public class UserController {
 	UserService userService;
 	
 	@Resource(name=BeanIocConfig.USER_CACHE)
-	RedisCacheManager<String, User> userCache;
+	RedisCacheManager<UserCacheKey, User> userCache;
 	@Resource(name=BeanIocConfig.LOGIN_TIMES_CACHE)
 	LongRedisCacheManager<User> loginTimeCache;
 	
@@ -79,13 +79,11 @@ public class UserController {
 		User user = userService.getUser(username);
 		if (user.getPassword().equals(password)) {
 			ResponseBean bean = ResponseBean.crtSuccessBean();
-			bean.setCode(code);
-			return JSON.toJSONString(user);
+			bean.setContent(user);
+			return bean.toString();
 		} else {
 			return ResponseBean.crtFailureResult("密码错误");
 		}
-		
-		
 		
 	}
 	
@@ -104,7 +102,7 @@ public class UserController {
 		response.addCookie(
 				CookieFactory.getUserCookie(new UserCookieContainer(uuid, user, System.currentTimeMillis())));
 		// 添加到cache中
-		userCache.set(uuid, user);
+		userCache.set(new UserCacheKey(user.getId(), uuid), user);
 		loginTimeCache.increment(user);
 
 		response.addCookie(CookieFactory.getUsernameCookie(user.getName()));

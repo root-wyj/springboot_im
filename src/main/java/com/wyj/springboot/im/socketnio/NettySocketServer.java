@@ -2,6 +2,8 @@ package com.wyj.springboot.im.socketnio;
 
 import javax.annotation.PostConstruct;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
@@ -9,7 +11,8 @@ import com.corundumstudio.socketio.AuthorizationListener;
 import com.corundumstudio.socketio.Configuration;
 import com.corundumstudio.socketio.HandshakeData;
 import com.corundumstudio.socketio.SocketIOServer;
-import com.wyj.springboot.im.tools.StringUtil;
+import com.wyj.springboot.im.authorize.cookie.HeaderFactory;
+import com.wyj.springboot.im.authorize.cookie.UserHeaderContainer;
 
 /**
  * 
@@ -32,6 +35,8 @@ import com.wyj.springboot.im.tools.StringUtil;
 @Component
 //@PropertySource("classpath:redis.properties")
 public class NettySocketServer {
+	private static final Logger logger = LoggerFactory.getLogger(NettySocketServer.class);
+	
 	@Value("${nss.server.host}")
 	private String host;
 	@Value("${nss.server.port}")
@@ -50,11 +55,14 @@ public class NettySocketServer {
 			
 			@Override
 			public boolean isAuthorized(HandshakeData data) {
-				String token = data.getSingleUrlParam("token");
-				if (StringUtil.isEmpty(token)) {
+				String token = data.getHttpHeaders().get(HeaderFactory.HEADER_KEY_USER_TOKEN);
+				UserHeaderContainer container = UserHeaderContainer.resolveUserCookie(token);
+				
+				if (container.getUserId() <= 0) {
+					logger.info("websocket握手失败  验证用户身份失败，container:{}", container);
 					return false;
 				} else {
-					System.out.println(token+" login!!!");
+					logger.info("websocket握手成功  login!!! id:{}, uuid:{}", container.getUserId(), container.getUuid());
 					return true;
 				}
 				

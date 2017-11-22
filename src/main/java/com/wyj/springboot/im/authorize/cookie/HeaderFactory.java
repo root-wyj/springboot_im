@@ -1,8 +1,5 @@
 package com.wyj.springboot.im.authorize.cookie;
 
-import javax.servlet.http.Cookie;
-
-import com.wyj.springboot.im.config.Constants;
 
 /**
  * 

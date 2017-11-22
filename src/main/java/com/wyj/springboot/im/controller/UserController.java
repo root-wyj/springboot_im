@@ -58,9 +58,6 @@ public class UserController {
 	IRedisService redisService;
 	
 	@Autowired
-	UserContext userContext;
-	
-	@Autowired
 	Environment env;
 
 	
@@ -76,6 +73,10 @@ public class UserController {
 //		response.addCookie(CookieFactory.getUsernameCookie(user.getName()));
 //	}
 
+	@GetMapping(value="/user/test")
+	public String test() {
+		return "test success!!";
+	}
 
     @PostMapping(value = "login")
     public String login(HttpServletRequest request, HttpServletResponse response,
@@ -102,6 +103,7 @@ public class UserController {
             JSONObject content = new JSONObject();
             content.put("wsServer", ZJHProperties.WEBSOCKET_SERVER_URL);
             content.put(tokenHeader.key, tokenHeader.value);
+            bean.setContent(content);
             return bean.toString();
         } else {
             return ResponseBean.crtFailureResult("密码错误");
@@ -110,7 +112,7 @@ public class UserController {
 
     }
 
-    @PostMapping
+    @PostMapping("/registe")
     public String registe(HttpServletRequest request, HttpServletResponse response,
                           @RequestBody Map<String, String> model) {
         if (model == null) {
@@ -137,19 +139,16 @@ public class UserController {
     
 	@GetMapping("/userInfo")
 	public String userInfo(HttpServletRequest request, HttpServletResponse response) {
-		return JSON.toJSONString(userContext.get());
+		return JSON.toJSONString(UserContext.getCurrentUser());
 	}
 
 
     private HeaderFactory.Header loginSuccess(User user) {
-        String token = "";
         String uuid = UUID.randomUUID().toString();
-//		response.addCookie(
-//				CookieFactory.getUserCookie(new UserCookieContainer(uuid, user, System.currentTimeMillis())));
 		// 添加到cache中
 		userCache.set(new UserCacheKey(user.getId(), uuid), user);
 		loginTimeCache.increment(user);
-        return HeaderFactory.getUserHeader(new UserHeaderContainer(user.getId(), System.currentTimeMillis()));
+        return HeaderFactory.getUserHeader(new UserHeaderContainer(user.getId(), uuid, System.currentTimeMillis()));
     }
 
     public static void main(String[] args) {
@@ -158,11 +157,15 @@ public class UserController {
                 ;
 
         String encrytStr = XXTEA.encrypt(originStr);
+        
+        String encryStr2 = "af7e0b8a01a92fa6ee1225228dbab81f2b06cacfa0b974559739bcad78ab87f306e4d1dcae0a5ce29e5fc47e75f82f667e4f3d477193a9f8";
 
         String base64Str = Base64.getEncoder().encodeToString(originStr.getBytes());
         System.out.println("originStr:" + originStr
                 + "\n encrytStr:" + encrytStr
-                + "\n base64Str:" + base64Str);
+                + "\n base64Str:" + base64Str
+                + "\n encryStr2:" + encryStr2
+                + "\n baseEncryStr2:"+Base64.getEncoder().encodeToString(encryStr2.getBytes()));
     }
 
 }

@@ -9,6 +9,7 @@ import org.springframework.stereotype.Component;
 
 import com.alibaba.fastjson.JSON;
 import com.wyj.springboot.im.authorize.cache.RedisCacheManager;
+import com.wyj.springboot.im.authorize.cache.keymodel.UserCacheKey;
 import com.wyj.springboot.im.config.Constants;
 import com.wyj.springboot.im.entity.User;
 import com.wyj.springboot.im.tools.StringUtil;
@@ -23,9 +24,11 @@ import com.wyj.springboot.im.tools.XXTEA;
 public class UserHeaderContainer {
 	private long userId;
 	private long timestamp;
+	private String uuid;
 	
-	public UserHeaderContainer(long userId, long timestamp) {
+	public UserHeaderContainer(long userId, String uuid, long timestamp) {
 		this.userId = userId;
+		this.uuid = uuid;
 		this.timestamp = timestamp;
 	}
 
@@ -37,14 +40,18 @@ public class UserHeaderContainer {
 		return timestamp;
 	}
 	
+	public String getUuid() {
+		return uuid;
+	}
+	
 	
 	static Logger logger = LoggerFactory.getLogger(UserHeaderContainer.class);
 	
 	
 	@Autowired
-	RedisCacheManager<String, User> userCache;
+	RedisCacheManager<UserCacheKey, User> userCache;
 	
-	static RedisCacheManager<String, User> sUserCache;
+	static RedisCacheManager<UserCacheKey, User> sUserCache;
 	
 	public UserHeaderContainer() {}
 	
@@ -63,7 +70,7 @@ public class UserHeaderContainer {
 		}
 		String encrytStr = "";
 		try{
-			encrytStr = XXTEA.encrypt(c.timestamp+":"+c.userId+":XXTEA");
+			encrytStr = XXTEA.encrypt(c.timestamp+":"+c.userId+":"+c.uuid);
 		} catch(Exception e) {
 			logger.error("加密生成UserCookieContainer的时候出错，error:"+e.getMessage()+". UserHeaderContainer:{}"+JSON.toJSONString(c), e);
 		}
@@ -101,6 +108,7 @@ public class UserHeaderContainer {
 //			}
 			result = new UserHeaderContainer();
 			result.userId = Long.valueOf(userId);
+			result.uuid = desValues[2];
 		} catch (Exception e) {
 			logger.error("解析cookie出错，"+e.getMessage(), e);
 			return null;

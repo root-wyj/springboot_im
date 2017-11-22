@@ -32,7 +32,7 @@ public class UserServiceImp implements UserService{
 	RedisCacheManager<UserCacheKey, User> userCache;
 	
 	public boolean isExist(String name) {
-		return null!=userRepository.findByName(name);
+		return null!=userRepository.findByUsername(name);
 	}
 	
 	public boolean isExist(long id) {
@@ -44,12 +44,12 @@ public class UserServiceImp implements UserService{
 	}
 	
 	public User getUser(String name) {
-		return userRepository.findByName(name);
+		return userRepository.findByUsername(name);
 	}
 
 	public long addUser(String name, String password) {
 		User user = new User();
-		user.setName(name);
+		user.setUsername(name);
 		user.setPassword(password);
 		User u = userRepository.save(user);
 		if (u != null) {

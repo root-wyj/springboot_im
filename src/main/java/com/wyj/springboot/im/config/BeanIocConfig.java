@@ -4,7 +4,6 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
 import com.corundumstudio.socketio.annotation.SpringAnnotationScanner;
-import com.wyj.springboot.im.authorize.UserContext;
 import com.wyj.springboot.im.authorize.cache.KeySerilizable;
 import com.wyj.springboot.im.authorize.cache.LongRedisCacheManager;
 import com.wyj.springboot.im.authorize.cache.RedisCacheManager;
@@ -21,12 +20,6 @@ import com.wyj.springboot.im.socketnio.NettySocketServer;
 
 @Configuration
 public class BeanIocConfig {
-	
-	@Bean
-	public UserContext userContext() {
-		return new UserContext();
-	}
-	
 	
 	/**
 	 * 用于扫描socket事件监听的注解的类
@@ -55,7 +48,7 @@ public class BeanIocConfig {
 	
 	@Bean(name=USER_CACHE)
 	public RedisCacheManager<UserCacheKey, User> userCM() {
-		return new RedisCacheManager<UserCacheKey, User>(20*60, new KeySerilizable<UserCacheKey>() {
+		return new RedisCacheManager<UserCacheKey, User>(Constants.HEADER_USER_TOKEN_EXPIRED, new KeySerilizable<UserCacheKey>() {
 			@Override
 			public String serilizableKey(UserCacheKey key) {
 				return USER_CACHE+"_"+key.getUserId()+"_"+key.getUuid();

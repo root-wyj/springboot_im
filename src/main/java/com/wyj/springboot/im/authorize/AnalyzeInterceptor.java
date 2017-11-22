@@ -1,18 +1,19 @@
 package com.wyj.springboot.im.authorize;
 
-import javax.servlet.http.Cookie;
+import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.servlet.HandlerInterceptor;
 import org.springframework.web.servlet.ModelAndView;
 
+import com.wyj.springboot.im.authorize.cache.RedisCacheManager;
+import com.wyj.springboot.im.authorize.cache.keymodel.UserCacheKey;
 import com.wyj.springboot.im.authorize.cookie.HeaderFactory;
-import com.wyj.springboot.im.authorize.cookie.EmptyHeaderFactory;
 import com.wyj.springboot.im.authorize.cookie.UserHeaderContainer;
+import com.wyj.springboot.im.config.BeanIocConfig;
 import com.wyj.springboot.im.entity.User;
 import com.wyj.springboot.im.tools.StringUtil;
 
@@ -27,59 +28,29 @@ public class AnalyzeInterceptor implements HandlerInterceptor{
 
 	Logger logger = LoggerFactory.getLogger(AnalyzeInterceptor.class);
 	
-	@Autowired
-	private UserContext userContext
-			= new UserContext()
-			;
-		
+	@Resource(name=BeanIocConfig.USER_CACHE)
+	RedisCacheManager<UserCacheKey, User> userCache;
+	
+	private UserContext userContext;
+	
 	@Override
 	public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler)
 			throws Exception {
-		Object o = request.getAttribute("backAuth");
-		int backAuth = StringUtil.toInteger(String.valueOf(o), 0);
-		System.out.println("get backAuth value->"+backAuth);
+//		Object o = request.getAttribute("backAuth");
+//		int backAuth = StringUtil.toInteger(String.valueOf(o), 0);
+//		System.out.println("get backAuth value->"+backAuth);
 		
-		Cookie[] cookies = request.getCookies();
-		Long userId = null;
-		String userSessionCookie = null;
-		String usernameCookie = null;
-		
-		if (cookies != null && cookies.length > 0) {
-			for(Cookie c : cookies) {
-				if (c.getName().equals(HeaderFactory.HEADER_KEY_USER_TOKEN)) {
-					userSessionCookie = c.getValue();
-				} else if (c.getName().equals(HeaderFactory.COOKIE_KEY_USER_NAME)) {
-					usernameCookie = c.getValue();
-				}
-			}
-		}
+		String userSessionCookie = request.getHeader(HeaderFactory.HEADER_KEY_USER_TOKEN);
 		
 		if (!StringUtil.isEmpty(userSessionCookie)) {
 			UserHeaderContainer container = null;
 			if ((container = UserHeaderContainer.resolveUserCookie(userSessionCookie)) != null) {
-				setUser(container.getUser(), container.getUuid());
-				userId = container.getUser().getId();
-
+				User user = userCache.get(new UserCacheKey(container.getUserId(), container.getUuid()));
+				if (user != null) {
+					setUser(user, container.getUuid());
+				}
 				//如果超过3分钟更新
 //				updateUserCookie(container, response);
-
-				if (StringUtil.isEmpty(usernameCookie)) {
-//					UserInfo userInfo = userService.getUserInfoById(userId);
-//					response.addCookie(HeaderFactory.getUsernameCookie(userInfo.getNickname()));
-//					response.addCookie(HeaderFactory.getUserIconCookie(userInfo.getIcon()));
-				}
-
-			} else {
-				response.addCookie(EmptyHeaderFactory.getEmptyUserCookie());
-			}
-		}
-		
-		
-		if (userId == null) {
-			userContext.remove();
-			
-			if (!StringUtil.isEmpty(usernameCookie)) {
-				response.addCookie(EmptyHeaderFactory.getEmptyUsernameCookie());
 			}
 		}
 		
@@ -96,12 +67,12 @@ public class AnalyzeInterceptor implements HandlerInterceptor{
 	public void afterCompletion(HttpServletRequest request, HttpServletResponse response, Object handler, Exception ex)
 			throws Exception {
 		if (userContext != null) {
-			userContext.remove();
+			userContext.close();
 		}
 	}
 	
 	private void setUser(User user, String uuid){
-		userContext.set(user);
+		userContext = new UserContext(user, uuid);
 	}
 	
 //	private void updateUserCookie(UserHeaderContainer container, HttpServletResponse response) {

@@ -82,6 +82,13 @@ public class NettySocketServer {
 		return server;
 	}
 	
+	/*
+	 * 通过查看Namespace源码中发送消息的代码（比如onConnect就会向客户端发送消息），发现了这种方式： storeFactory.pubSubStore().publish(PubSubType.LEAVE, new JoinLeaveMessage(client.getSessionId(), getName(), getName()));
+	 * 
+	 * 
+	 */
+	
+	
 	//namespace 是什么 是客户端么， 那SocketIOServer里两个namespace，mainNamespace是用来添加监听的，另一个namespacesHub是什么意思？
 	//广播发送消息的时候，getBroadcastOperations相当于new 一个BroadcastOperations，第一个参数是所有的客户端，使用mainNamespace.getAllClients获取的
 	

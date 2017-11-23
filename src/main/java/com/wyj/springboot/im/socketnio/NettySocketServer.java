@@ -83,7 +83,15 @@ public class NettySocketServer {
 	}
 	
 	/*
-	 * 通过查看Namespace源码中发送消息的代码（比如onConnect就会向客户端发送消息），发现了这种方式： storeFactory.pubSubStore().publish(PubSubType.LEAVE, new JoinLeaveMessage(client.getSessionId(), getName(), getName()));
+	 * 其实我想在onConnect中给客户端传点数据，比如说是用户信息啊 等等，所以又去翻源码，虽然还是没找到方法，但是找到了答案。
+	 * 通过查看Namespace源码中发送消息的代码（比如onConnect就会向客户端发送消息），发现了这种方式：
+	 * 	storeFactory.pubSubStore().publish(PubSubType.LEAVE, new JoinLeaveMessage(client.getSessionId(), getName(), getName()));
+	 * 	第一个参数消息类型分为 CONNECT, DISCONNECT, JOIN, LEAVE, DISPATCH，普通消息是 DISPATCH类型。
+	 * 	第二个参数是接口PubSubMessage的实现。他有下面四种实现ConnectMessage, DisConnectMessage, DispatchMessage, JoinLeaveMessage。
+	 * 
+	 * 通过研究Namespace的onConnect方法（就是在该方法中向客户端发送了消息，客户端收到了onConnect的监听），发现上面发送消息的方式并没有提供添加数据的接口。
+	 * 	所以就去找普通发送消息的方式。在BroadcastOperations的sendEvent中找到了发送消息的源头。该方法就是用Packet对数据进行封装，最后调用了send(Packet packet)方法。
+	 * 	该方法中做了两件事，1、遍历client并 client.send(packet) 2、调用dispatch方法，就是调用上面的storeFactory的方法。
 	 * 
 	 * 
 	 */

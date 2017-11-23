@@ -55,7 +55,8 @@ public class NettySocketServer {
 			
 			@Override
 			public boolean isAuthorized(HandshakeData data) {
-				String token = data.getHttpHeaders().get(HeaderFactory.HEADER_KEY_USER_TOKEN);
+//				String token = data.getHttpHeaders().get(HeaderFactory.HEADER_KEY_USER_TOKEN);
+				String token = data.getSingleUrlParam(HeaderFactory.HEADER_KEY_USER_TOKEN);
 				UserHeaderContainer container = UserHeaderContainer.resolveUserCookie(token);
 				
 				if (container.getUserId() <= 0) {

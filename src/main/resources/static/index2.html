@@ -30,30 +30,39 @@
 	<script>
 
 		var isInRoom = false;
-	
-        var userName = 'user' + Math.floor((Math.random()*1000)+1);
+		var userId;
+        var userName;
 
-		var socket =  io.connect('http://localhost:9090?token='+userName);
-
-		socket.on('connect', function() {
-			output('<span class="connect-msg">'+userName+' has connected to the server!</span>');
-		});
-
-		socket.on('onTalk', function(data) {
-			output('<span class="username-msg">' + data + '</span> ');
-		});
+		var socket;
+		function connect() {
+			socket =  io.connect('http://localhost:9090?zjh_header_user_token='+$('#token').val());
 		
-		socket.on('onRoomBroadcast', function(data) {
-			output('<span class="username-msg">' + data + ':</span> ');
-		});
+			socket.on('connectedSocket', function(data) {
+				userId = data.userId;
+				userName = data.username;
+				output('<span class="connect-msg"> connectedSocket '+userName+' has connected to the server!</span>');
+			})
 
-		socket.on('disconnect', function() {
-			output('<span class="disconnect-msg">The client has disconnected!</span>');
-		});
+			socket.on('connect', function() {
+				output('<span class="connect-msg"> connect '+userName+' has connected to the server!</span>');
+			});
 
-                function sendDisconnect() {
-                        socket.disconnect();
-                }
+			socket.on('onTalk', function(data) {
+				output('<span class="username-msg">' + data + '</span> ');
+			});
+			
+			socket.on('onRoomBroadcast', function(data) {
+				output('<span class="username-msg">' + data + ':</span> ');
+			});
+	
+			socket.on('disconnect', function() {
+				output('<span class="disconnect-msg">The client has disconnected!</span>');
+			});
+		}
+
+        function sendDisconnect() {
+                socket.disconnect();
+        }
 
 		function sendMessage() {
                         var message = $('#msg').val();
@@ -99,6 +108,8 @@
 
         <form class="well form-inline" onsubmit="return false;">
            <input id="msg" class="input-xlarge" type="text" placeholder="Type something..."/>
+           <input id="token" type="text" placeholder="your token to socketio" />
+           <button type="button" onClick="connect()" class="btn" id="conn">Connect</button>
            <button type="button" onClick="sendMessage()" class="btn" id="send">Send</button>
            <button type="button" onClick="sendDisconnect()" class="btn">Disconnect</button>
            <button type="button" onClick="inRoom()" class="btn">InRoom</button>

@@ -12,6 +12,8 @@ import com.alibaba.fastjson.JSONObject;
 import com.wyj.springboot.im.authorize.cookie.HeaderFactory;
 import com.wyj.springboot.im.authorize.cookie.UserHeaderContainer;
 import com.wyj.springboot.im.entity.common.ZJHProperties;
+import com.wyj.springboot.im.exception.ZJHRuntimeException;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -75,7 +77,8 @@ public class UserController {
 
 	@GetMapping(value="/user/test")
 	public String test() {
-		return "test success!!";
+		throw new ZJHRuntimeException("测试异常");
+//		return "test success!!";
 	}
 
     @PostMapping(value = "login")

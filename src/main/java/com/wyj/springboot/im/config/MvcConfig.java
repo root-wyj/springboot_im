@@ -34,10 +34,12 @@ public class MvcConfig extends WebMvcConfigurerAdapter{
 				;
 	}
 
-//	@Override
-//	public void addResourceHandlers(ResourceHandlerRegistry registry) {
-//		registry.addResourceHandler("/static/").addResourceLocations("classpath:/static/");
-//		super.addResourceHandlers(registry);
-//	}
+	/**
+	 * 设置静态资源访问前缀
+	 */
+	@Override
+	public void addResourceHandlers(ResourceHandlerRegistry registry) {
+		registry.addResourceHandler("/static/**").addResourceLocations("classpath:/static/");
+	}
 
 }

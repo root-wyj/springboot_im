@@ -11,16 +11,19 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
+import com.corundumstudio.socketio.AckRequest;
 import com.corundumstudio.socketio.SocketIOClient;
 import com.corundumstudio.socketio.SocketIOServer;
 import com.corundumstudio.socketio.annotation.OnConnect;
 import com.corundumstudio.socketio.annotation.OnDisconnect;
+import com.corundumstudio.socketio.annotation.OnEvent;
 import com.wyj.springboot.im.authorize.cache.RedisCacheManager;
 import com.wyj.springboot.im.authorize.cache.keymodel.UserCacheKey;
 import com.wyj.springboot.im.authorize.cookie.HeaderFactory;
 import com.wyj.springboot.im.authorize.cookie.UserHeaderContainer;
 import com.wyj.springboot.im.config.BeanIocConfig;
 import com.wyj.springboot.im.entity.User;
+import com.wyj.springboot.im.entity.common.ResponseBean;
 import com.wyj.springboot.im.exception.ZJHRuntimeException;
 import com.wyj.springboot.im.socketnio.NettySocketServer;
 import com.wyj.springboot.im.socketnio.UserDescribe;
@@ -79,6 +82,18 @@ public class SocketConnectedHandler {
 		UserDescribe describe = clientMap.get(sessionId);
 		logger.info("{} disconnect!! userId:{}", describe.getUsername(), describe.getUserId());
 		clientMap.remove(sessionId);
+	}
+	
+	@OnEvent("ackTest")
+	public void test(SocketIOClient client, AckRequest request) {
+		//[object Object]
+		request.sendAckData(ResponseBean.crtSuccessBean());
+	}
+	
+	@OnEvent("ackTest2")
+	public void test2(SocketIOClient client, AckRequest request) {
+		//{"msg":"ok","code":"0"}
+		request.sendAckData(ResponseBean.crtSuccessResult());
 	}
 
 }

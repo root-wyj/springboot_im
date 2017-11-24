@@ -2,118 +2,185 @@
 <html>
 <head>
 
-        <meta charset="utf-8" />
+<meta charset="utf-8" />
 
-        <title>Demo Chat</title>
+<title>Demo Chat</title>
 
-        <link href="bootstrap.css" rel="stylesheet">
+<link href="bootstrap.css" rel="stylesheet">
 
-	<style>
-		body {
-			padding:20px;
-		}
-		#console {
-			height: 400px;
-			overflow: auto;
-		}
-		.username-msg {color:orange;}
-		.connect-msg {color:green;}
-		.disconnect-msg {color:red;}
-		.send-msg {color:#888}
-	</style>
+<style>
+body {
+	padding: 20px;
+}
+
+#console {
+	height: 400px;
+	overflow: auto;
+}
+
+.username-msg {
+	color: orange;
+}
+
+.connect-msg {
+	color: green;
+}
+
+.disconnect-msg {
+	color: red;
+}
+
+.send-msg {
+	color: #888
+}
+</style>
 
 
-	<script src="js/socket.io/socket.io.js"></script>
-        <script src="js/moment.min.js"></script>
-        <script src="http://code.jquery.com/jquery-1.10.1.min.js"></script>
+<script src="js/socket.io/socket.io.js"></script>
+<script src="js/moment.min.js"></script>
+<script src="http://code.jquery.com/jquery-1.10.1.min.js"></script>
 
-	<script>
+<script>
+	var isInRoom = false;
+	var userId;
+	var userName;
 
-		var isInRoom = false;
-		var userId;
-        var userName;
+	var socket;
+	function connect() {
+		socket = io.connect('http://localhost:9090?zjh_header_user_token='
+				+ $('#token').val());
 
-		var socket;
-		function connect() {
-			socket =  io.connect('http://localhost:9090?zjh_header_user_token='+$('#token').val());
+		socket.on('connectedSocket', function(data) {
+			userId = data.userId;
+			userName = data.username;
+			output('<span class="connect-msg"> connectedSocket ' + userName
+					+ ' has connected to the server!</span>');
+		})
+
+		socket.on('connect', function() {
+			output('<span class="connect-msg"> connect ' + userName
+					+ ' has connected to the server!</span>');
+		});
+
+		socket.on('onTalk', function(data) {
+			output('<span class="username-msg">' + data + '</span> ');
+		});
+
+		socket.on('disconnect',	function() {
+			output('<span class="disconnect-msg">The client has disconnected!</span>');
+		});
 		
-			socket.on('connectedSocket', function(data) {
-				userId = data.userId;
-				userName = data.username;
-				output('<span class="connect-msg"> connectedSocket '+userName+' has connected to the server!</span>');
-			})
+		//room 监听
+		socket.on('onInRoom', function(data) {
+			output('<span class="username-msg">' + data + '</span> ');
+		});
+		
+		socket.on('onQuitRoom', function(data) {
+			output('<span class="username-msg">' + data + '</span> ');
+		});
+		
+	}
 
-			socket.on('connect', function() {
-				output('<span class="connect-msg"> connect '+userName+' has connected to the server!</span>');
-			});
+	function sendDisconnect() {
+		socket.disconnect();
+	}
 
-			socket.on('onTalk', function(data) {
-				output('<span class="username-msg">' + data + '</span> ');
-			});
-			
-			socket.on('onRoomBroadcast', function(data) {
-				output('<span class="username-msg">' + data + ':</span> ');
-			});
+	function sendMessage() {
+		var message = $('#msg').val();
+		var room = "";
+		if (isInRoom) {
+			room = "room1";
+		}
+		$('#msg').val('');
+
+		var jsonObject = {
+			room : room,
+			content : message
+		};
+		socket.emit('talk', jsonObject);
+	}
+
+	function output(message) {
+		var currentTime = "<span class='time'>"
+				+ moment().format('HH:mm:ss.SSS') + "</span>";
+		var element = $("<div>" + currentTime + " " + message + "</div>");
+		$('#console').prepend(element);
+	}
+
+	$(document).keydown(function(e) {
+		if (e.keyCode == 13) {
+			$('#send').click();
+		}
+	});
+</script>
+
+<script>
+	//test script
+	function test() {
+		var currentTime = "<span class='time'>"
+				+ moment().format('HH:mm:ss.SSS') + "</span>";
+		var element = $("<div>" + currentTime + " 发出acktest信号 </div>");
+		$('#console').prepend(element);
+
+		socket.emit('ackTest', null, function(data) {
+			console.log("test1接收到ack数据：" + data);
+		});
+	}
+
+	function test2() {
+		socket.emit('ackTest2', null, function(data) {
+			console.log("test2接收到ack数据：" + data);
+		});
+	}
+</script>
+
+<script>
+	//room script
+
+	function createRoom() {
+		socket.emit('createRoom', null, function(data) {
+			console.log(data);
+		});
+	}
 	
-			socket.on('disconnect', function() {
-				output('<span class="disconnect-msg">The client has disconnected!</span>');
-			});
-		}
-
-        function sendDisconnect() {
-                socket.disconnect();
-        }
-
-		function sendMessage() {
-                        var message = $('#msg').val();
-                        var room = "";
-                        if (isInRoom) {
-                        	room = "room1";
-                        }
-                        $('#msg').val('');
-
-                        var jsonObject = {room: room,
-                                          content: message};
-                        socket.emit('talk', jsonObject);
-		}
-		
-		function inRoom() {
-			var jsonObject = {userName:userName, message: inRoom};
-			isInRoom = true;
-			socket.emit('inRoom', jsonObject);
-		}
-
-		function output(message) {
-                        var currentTime = "<span class='time'>" +  moment().format('HH:mm:ss.SSS') + "</span>";
-                        var element = $("<div>" + currentTime + " " + message + "</div>");
-			$('#console').prepend(element);
-		}
-
-        $(document).keydown(function(e){
-            if(e.keyCode == 13) {
-                $('#send').click();
-            }
-        });
-	</script>
+	function inRoom() {
+		socket.emit('inRoom', null, function(data) {
+			console.log(data);
+		});
+	}
+	
+	function quitRoom() {
+		socket.emit('quitRoom', null, function(data) {
+			console.log(data);
+		})
+	}
+</script>
 </head>
 
 <body>
 
 	<h1>Netty-socketio Demo Chat</h1>
 
-	<br/>
+	<br />
 
-	<div id="console" class="well">
-	</div>
+	<div id="console" class="well"></div>
 
-        <form class="well form-inline" onsubmit="return false;">
-           <input id="msg" class="input-xlarge" type="text" placeholder="Type something..."/>
-           <input id="token" type="text" placeholder="your token to socketio" />
-           <button type="button" onClick="connect()" class="btn" id="conn">Connect</button>
-           <button type="button" onClick="sendMessage()" class="btn" id="send">Send</button>
-           <button type="button" onClick="sendDisconnect()" class="btn">Disconnect</button>
-           <button type="button" onClick="inRoom()" class="btn">InRoom</button>
-        </form>
+	<form class="well form-inline" onsubmit="return false;">
+		<input id="msg" class="input-xlarge" type="text"
+			placeholder="Type something..." />
+		<button type="button" onClick="sendMessage()" class="btn" id="send">Send</button>
+		<br /> <input id="token" type="text"
+			placeholder="your token to socketio" />
+		<button type="button" onClick="connect()" class="btn" id="conn">Connect</button>
+		<button type="button" onClick="sendDisconnect()" class="btn">Disconnect</button>
+		<br /> <br />
+		<button type="button" onClick="test()" class="btn">test</button>
+		<button type="button" onClick="test2()" class="btn">test2</button>
+		<br />
+		<button type="button" onClick="createRoom()" class="btn">CreateRoom</button>
+		<button type="button" onClick="inRoom()" class="btn">InRoom</button>
+		<button type="button" onClick="quitRoom()" class="btn">quitRoom</button>
+	</form>
 
 
 

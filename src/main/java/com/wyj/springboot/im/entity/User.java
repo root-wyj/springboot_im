@@ -22,6 +22,14 @@ public class User {
 	@Column(nullable=false)
 	private String password;
 
+	public User() {}
+	
+	public User(Builder builder) {
+		this.id = builder.id;
+		this.username = builder.username;
+	}
+	
+	
 	public Long getId() {
 		return id;
 	}
@@ -44,5 +52,28 @@ public class User {
 
 	public void setPassword(String password) {
 		this.password = password;
+	}
+	
+	
+	public static class Builder{
+		Long id;
+		String username;
+		
+		public Builder() {}
+		
+		public Builder setId(Long id) {
+			this.id = id;
+			return this;
+		}
+		
+		public Builder setUsername(String username) {
+			this.username = username;
+			return this;
+		}
+		
+		public User build() {
+			return new User(this);
+		}
+		
 	}
 }

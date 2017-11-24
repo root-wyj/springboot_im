@@ -52,13 +52,5 @@ public class SocketMessageHandler {
 		logger.info("client all rooms:"+socketIOClient.getAllRooms());
 	}
 
-	
-	@OnEvent(value="inRoom")
-	public void inRoom(SocketIOClient socketIOClient, Object data) {
-		UserDescribe describe = SocketConnectedHandler.clientMap.get(socketIOClient.getSessionId().toString());
-		logger.info(describe.getUsername() + " inRoom room1");
-		socketIOClient.joinRoom("room1");
-		server.getRoomOperations("room1").sendEvent("onRoomBroadcast", describe.getUsername()+"come in room");
-	}
 }
 	

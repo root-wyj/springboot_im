@@ -93,6 +93,9 @@ public class NettySocketServer {
 	 * 	所以就去找普通发送消息的方式。在BroadcastOperations的sendEvent中找到了发送消息的源头。该方法就是用Packet对数据进行封装，最后调用了send(Packet packet)方法。
 	 * 	该方法中做了两件事，1、遍历client并 client.send(packet) 2、调用dispatch方法，就是调用上面的storeFactory的方法。
 	 * 
+	 * client.send调用的是SocketIOClient的实现类NamespaceClient中的方法。实际上调用的是ClientHead的send方法，最后发的就是那个Packet包
+	 * 
+	 * 使用storeFactory发送消息，要选择消息的类型和消息的内容，消息的内容用PubSubMessage封装了，里面有的包括了消息体Packet，有的则没有消息体，如 ConnectMessage
 	 * 
 	 */
 	

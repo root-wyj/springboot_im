@@ -10,10 +10,30 @@ Target Server Type    : MYSQL
 Target Server Version : 50711
 File Encoding         : 65001
 
-Date: 2017-11-14 13:48:41
+Date: 2017-11-24 18:26:24
 */
 
 SET FOREIGN_KEY_CHECKS=0;
+
+-- ----------------------------
+-- Table structure for `room`
+-- ----------------------------
+DROP TABLE IF EXISTS `room`;
+CREATE TABLE `room` (
+  `room_id` int(11) NOT NULL AUTO_INCREMENT,
+  `play_info` varchar(500) DEFAULT NULL,
+  `room_status` tinyint(2) NOT NULL DEFAULT '0',
+  `play_counts` tinyint(4) NOT NULL DEFAULT '0',
+  `room_owner` int(11) NOT NULL,
+  `operate_type` tinyint(2) DEFAULT NULL,
+  `operate_user` tinyint(11) DEFAULT NULL,
+  PRIMARY KEY (`room_id`)
+) ENGINE=InnoDB AUTO_INCREMENT=1001 DEFAULT CHARSET=utf8;
+
+-- ----------------------------
+-- Records of room
+-- ----------------------------
+INSERT INTO `room` VALUES ('1000', 'ææ¯æ¿é´ä¿¡æ¯', '0', '0', '1', null, null);
 
 -- ----------------------------
 -- Table structure for `user`
@@ -32,13 +52,15 @@ CREATE TABLE `user` (
   PRIMARY KEY (`id`),
   UNIQUE KEY `username` (`username`),
   UNIQUE KEY `phone` (`phone`)
-) ENGINE=InnoDB AUTO_INCREMENT=1000 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=5 DEFAULT CHARSET=utf8;
 
 -- ----------------------------
 -- Records of user
 -- ----------------------------
 INSERT INTO `user` VALUES ('1', 'wuyingjie', 'e10adc3949ba59abbe56e057f20f883e', null, '0', '2017-11-14 13:45:49', '', '', '9');
 INSERT INTO `user` VALUES ('2', 'liuliji', 'e10adc3949ba59abbe56e057f20f883e', null, '0', '2017-11-14 13:46:20', '', '', '9');
+INSERT INTO `user` VALUES ('3', 'test', 'e10adc3949ba59abbe56e057f20f883e', null, '0', '2017-11-22 15:02:23', '', '', '0');
+INSERT INTO `user` VALUES ('4', 'test2', 'e10adc3949ba59abbe56e057f20f883e', null, '0', '2017-11-24 18:08:18', '', '', '0');
 
 -- ----------------------------
 -- Table structure for `user_game`

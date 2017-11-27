@@ -44,6 +44,7 @@ body {
 	var isInRoom = false;
 	var userId;
 	var userName;
+	var room = "";
 
 	var socket;
 	function connect() {
@@ -87,10 +88,7 @@ body {
 
 	function sendMessage() {
 		var message = $('#msg').val();
-		var room = "";
-		if (isInRoom) {
-			room = "room1";
-		}
+		
 		$('#msg').val('');
 
 		var jsonObject = {
@@ -139,18 +137,21 @@ body {
 
 	function createRoom() {
 		socket.emit('createRoom', null, function(data) {
+			room = data.roomId;
 			console.log(data);
 		});
 	}
 	
 	function inRoom() {
-		socket.emit('inRoom', null, function(data) {
+		socket.emit('inRoom', $('#roomId').val(), function(data) {
+			room = data.roomId;
 			console.log(data);
 		});
 	}
 	
 	function quitRoom() {
 		socket.emit('quitRoom', null, function(data) {
+			room = "";
 			console.log(data);
 		})
 	}
@@ -174,6 +175,7 @@ body {
 		<button type="button" onClick="connect()" class="btn" id="conn">Connect</button>
 		<button type="button" onClick="sendDisconnect()" class="btn">Disconnect</button>
 		<br /> <br />
+		<input id="roomId" class="input-xlarge" type="text" placeholder="room id" />
 		<button type="button" onClick="test()" class="btn">test</button>
 		<button type="button" onClick="test2()" class="btn">test2</button>
 		<br />

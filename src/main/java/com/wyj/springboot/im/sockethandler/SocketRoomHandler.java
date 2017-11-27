@@ -9,6 +9,7 @@ import com.corundumstudio.socketio.AckRequest;
 import com.corundumstudio.socketio.SocketIOClient;
 import com.corundumstudio.socketio.SocketIOServer;
 import com.corundumstudio.socketio.annotation.OnEvent;
+import com.corundumstudio.socketio.namespace.Namespace;
 import com.wyj.springboot.im.entity.Room;
 import com.wyj.springboot.im.entity.User;
 import com.wyj.springboot.im.entity.common.ResponseBean;
@@ -74,11 +75,26 @@ public class SocketRoomHandler {
 	@OnEvent(value="quitRoom")
 	public void quitRoom(SocketIOClient client, Object data, AckRequest request) {
 		UserDescribe describe = SocketConnectedHandler.clientMap.get(client.getSessionId().toString());
-		request.sendAckData(ResponseBean.crtSuccessBean().toString());
-		if (describe.getRoomId() > 0) {
-			server.getRoomOperations(describe.getRoomId()+"").sendEvent("onQuitRoom", describe.getUsername()+" out of room");
+		long roomId = describe.getRoomId();
+		ResponseBean bean = ResponseBean.crtSuccessBean();
+		if (roomId > 0) {
+			server.getRoomOperations(roomId+"").sendEvent("onQuitRoom", describe.getUsername()+" out of room");
+			client.leaveRoom(roomId+"");
 			describe.setRoomId(0);
-			client.leaveRoom(describe.getRoomId()+"");
+			
+			Room room = roomService.getRoom(roomId);
+			if (room.getRoomOwner() == describe.getUserId()) {
+//				Namespace namespace = (Namespace)server.getNamespace(Namespace.DEFAULT_NAME);
+//				Iterable<SocketIOClient> clients = namespace.getRoomClients(roomId+"");
+//				for (SocketIOClient c : clients) {
+//					UserDescribe desc = SocketConnectedHandler.clientMap.get(c.getSessionId().toString());
+//					client.leaveRoom(roomId+"");
+//					desc.setRoomId(0);
+//				}
+				bean.setMessage("房主退出房间，该房间已被移除");
+			}
+			
 		}
+		request.sendAckData(bean.toString());
 	}
 }

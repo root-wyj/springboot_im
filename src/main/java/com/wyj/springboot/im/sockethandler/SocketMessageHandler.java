@@ -18,8 +18,8 @@ import com.wyj.springboot.im.authorize.cache.keymodel.UserCacheKey;
 import com.wyj.springboot.im.config.BeanIocConfig;
 import com.wyj.springboot.im.entity.Message;
 import com.wyj.springboot.im.entity.User;
+import com.wyj.springboot.im.sockethandler.entity.UserInCache;
 import com.wyj.springboot.im.socketnio.NettySocketServer;
-import com.wyj.springboot.im.socketnio.UserDescribe;
 
 /**
  * 
@@ -46,7 +46,7 @@ public class SocketMessageHandler {
 	@OnEvent(value="talk")
 	public void onEvent(SocketIOClient socketIOClient, Message message, AckRequest request) {
 		logger.info("test event get data:"+JSON.toJSONString(message));
-		UserDescribe describe = SocketConnectedHandler.clientMap.get(socketIOClient.getSessionId().toString());
+		UserInCache describe = SocketConnectedHandler.clientMap.get(socketIOClient.getSessionId().toString());
 		server.getRoomOperations(message.getRoom()).sendEvent("onTalk", describe.getUsername()+":"+message.getContent());
 		logger.info("all rooms:"+((Namespace)(server.getNamespace(Namespace.DEFAULT_NAME))).getRooms());
 		logger.info("client all rooms:"+socketIOClient.getAllRooms());

@@ -25,8 +25,8 @@ import com.wyj.springboot.im.config.BeanIocConfig;
 import com.wyj.springboot.im.entity.User;
 import com.wyj.springboot.im.entity.common.ResponseBean;
 import com.wyj.springboot.im.exception.ZJHRuntimeException;
+import com.wyj.springboot.im.sockethandler.entity.UserInCache;
 import com.wyj.springboot.im.socketnio.NettySocketServer;
-import com.wyj.springboot.im.socketnio.UserDescribe;
 import com.wyj.springboot.im.tools.StringUtil;
 
 /**
@@ -42,7 +42,7 @@ public class SocketConnectedHandler {
 	
 	private final SocketIOServer server;
 	
-	public static final Map<String, UserDescribe> clientMap = Collections.synchronizedMap(new HashMap<>());
+	public static final Map<String, UserInCache> clientMap = Collections.synchronizedMap(new HashMap<>());
 	
 	@Resource(name=BeanIocConfig.USER_CACHE)
 	private RedisCacheManager<UserCacheKey, User> userCache;
@@ -69,7 +69,7 @@ public class SocketConnectedHandler {
 			throw new ZJHRuntimeException("");
 		}
 		logger.info("{} connect!!, userId:{}", user.getUsername(), user.getId());
-		UserDescribe describe = new UserDescribe();
+		UserInCache describe = new UserInCache();
 		describe.setUserId(user.getId());
 		describe.setUsername(user.getUsername());
 		clientMap.put(socketIOClient.getSessionId().toString(), describe);
@@ -79,7 +79,7 @@ public class SocketConnectedHandler {
 	@OnDisconnect
 	public void onDisConnect(SocketIOClient socketIOClient) {
 		String sessionId = socketIOClient.getSessionId().toString();
-		UserDescribe describe = clientMap.get(sessionId);
+		UserInCache describe = clientMap.get(sessionId);
 		logger.info("{} disconnect!! userId:{}", describe.getUsername(), describe.getUserId());
 		clientMap.remove(sessionId);
 	}

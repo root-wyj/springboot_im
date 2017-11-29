@@ -109,4 +109,5 @@ NettySocketIO是一个开源框架，非要说什么官网的话 怕就是上面
 
 
 ### 炸金花游戏逻辑
+[参考网上的状态模式](http://blog.csdn.net/hguisu/article/details/7557252)
 [扎金花大小比较算法(Java版)](http://blog.csdn.net/dobuy/article/details/31521609)

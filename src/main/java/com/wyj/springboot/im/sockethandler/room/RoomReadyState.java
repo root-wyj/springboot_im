@@ -57,11 +57,11 @@ public class RoomReadyState extends ARoomState{
 		for (UserInGame u : context.usersInRoom.values()) {
 			u.setCard(context.card.get(index));
 			u.setThisGameCost(Constants.GAME_INIT_BASE_COST);
+			context.gameCosted += u.getThisGameCost();
 			u.setInGame(true);
 			index ++;
 		}
-		context.refreshCost();
-		context.preCost = Constants.GAME_INIT_BASE_COST;
+		context.preRoundCost = Constants.GAME_INIT_BASE_COST;
 		context.gameCounts++;
 		RoomContext.logger.info("游戏开始!!");
 		

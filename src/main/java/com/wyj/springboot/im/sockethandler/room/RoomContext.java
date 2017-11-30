@@ -1,5 +1,6 @@
 package com.wyj.springboot.im.sockethandler.room;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
@@ -11,7 +12,7 @@ import java.util.concurrent.ConcurrentMap;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.wyj.springboot.im.sockethandler.entity.RoomDesc;
+import com.wyj.springboot.im.entity.GameResult;
 import com.wyj.springboot.im.sockethandler.entity.UserInCache;
 import com.wyj.springboot.im.sockethandler.entity.UserInGame;
 
@@ -72,12 +73,13 @@ public class RoomContext implements IRoomState{
 	public RoomContext(UserInCache owner) {
 		usersInRoom = new HashMap<>();
 		joinedUserId = new LinkedList<>();
+		preResult = new ArrayList<>();
 		
 		roomId = UUID.randomUUID().toString();
 		ownerId = owner.getUserId();
 		
 		gameCosted = 0;
-		preCost = 0;
+		preRoundCost = 0;
 		gameCounts = 0;
 		logger.info("管理员 {} (id:{}) 创建了房间 {}", owner.getUsername(), owner.getUserId(), roomId);
 		
@@ -86,17 +88,19 @@ public class RoomContext implements IRoomState{
 	}
 	
 	
-	static final Logger logger = LoggerFactory.getLogger(RoomDesc.class);
+	static final Logger logger = LoggerFactory.getLogger(RoomContext.class);
 	
 	public static ConcurrentMap<String, RoomContext> roomMap = new ConcurrentHashMap<>(); 
 	
 	//在该房间的用户
 	Map<Long, UserInGame> usersInRoom;
+	
+	List<GameResult> preResult;
 
 	//发言顺序
 	volatile  LinkedList<Long> joinedUserId;
 	
-	int preCost;
+	int preRoundCost;
 	
 	long ownerId;
 	
@@ -111,6 +115,10 @@ public class RoomContext implements IRoomState{
 	
 	long winerId;
 	
+	
+	
+	//该方法暂时不用
+	@Deprecated
 	void refreshCost() {
 		logger.info("\r\n当前下注情况 roomId:{}, ownerId:{}：", roomId, ownerId);
 		gameCosted = 0;
@@ -152,7 +160,7 @@ public class RoomContext implements IRoomState{
 	}
 	
 	public int getPreCost() {
-		return preCost;
+		return preRoundCost;
 	}
 	
 	public long getWinerId() {

@@ -7,11 +7,13 @@ package com.wyj.springboot.im.entity;
  */
 
 public class GameResult {
+	private long userId;
 	private String username;
 	private int cost;
 	private Integer card;
 	
-	public GameResult(String username, int cost, Integer card) {
+	public GameResult(Long userId, String username, int cost, Integer card) {
+		this.userId = userId;
 		this.username = username;
 		this.cost = cost;
 		this.card = card;
@@ -39,6 +41,14 @@ public class GameResult {
 
 	public void setCard(Integer card) {
 		this.card = card;
+	}
+	
+	public long getUserId() {
+		return userId;
+	}
+	
+	public GameResult copy() {
+		return new GameResult(userId, username, cost, card);
 	}
 	
 	

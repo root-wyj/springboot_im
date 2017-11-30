@@ -2,7 +2,6 @@ package com.wyj.springboot.im.sockethandler.entity;
 
 import java.io.Serializable;
 
-import com.wyj.springboot.im.config.Constants;
 import com.wyj.springboot.im.entity.GameResult;
 import com.wyj.springboot.im.entity.User;
 import com.wyj.springboot.im.sockethandler.room.RoomContext;
@@ -48,28 +47,7 @@ public class UserInGame implements Serializable{
 		user = u;
 		userId = u.getId();
 		isInGame = false;
-		preResult = new GameResult(user.getUsername(), 0, 0);
-	}
-	
-
-	
-	public boolean outRoom() {
-		if (isInGame) {
-			return false;
-		} else {
-			this.roomId = null;
-			return true;
-		}
-	}
-	
-	public void startGame(Integer card) {
-		if (!isInGame) {
-			this.card = card;
-			thisGameCost = Constants.GAME_INIT_BASE_COST;
-			isInGame = true;
-		} else {
-			return ;
-		}
+		preResult = new GameResult(userId, user.getUsername(), 0, 0);
 	}
 	
 	public int addThisGameCost(int cost) {
@@ -79,25 +57,6 @@ public class UserInGame implements Serializable{
 	
 	public int addPlayCounts() {
 		return this.thisLoginPlayCounts += 1;
-	}
-	
-	public void endGame(RoomDesc roomDesc) {
-		if (isInGame) {
-			//TODO
-			if(roomDesc.winerId == userId) {
-				thisGameCost = -thisGameCost + roomDesc.gameCosted;
-			}
-			
-			preResult.setCost(thisGameCost);
-			preResult.setCard(card);
-			
-			card  = null;
-			thisGameCost = 0;
-			isInGame = false;
-		} else {
-			return ;
-		}
-		
 	}
 	
 	/***************** get and set start ********************/

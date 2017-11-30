@@ -16,6 +16,17 @@ ps: git常用命令
 4. 之后就是让你输入连接杆github时的密码，密码确认密码，可直接3个回车略过，表示密码为空
 5. 到github上添加秘钥 中的公钥
 
+<br><br>
+`git添加里程碑--tag`<br>
+- `git commit --allow-empty -m "blank commit for annotated tag test."` 创建一个空白提交
+- `git tag -m '创建里程碑，初步走通游戏流程，并且可以运行！！！' tag_wyj_complete_game_1.0` 添加里程碑
+- `git tag -l -n1`, `git describe` 查看里程碑信息
+- `cat .git/refs/tags/tagname` 查看里程碑
+- `git tag -d tagname` 删除里程碑
+- `git tag tagname ec3edf7` 如果发现删除错误，通过这句命令补救。表示将此tag指向某个commit
+- `git push origin :mytag2` 远程删除tag
+<br>更加详细的里程碑内容，请参考：[Git学习7：Git中的里程碑](http://blog.csdn.net/u011116672/article/details/51277341)
+
 ### springboot 学习教程
 基础教程参考的是：[翟永超的springboot教程专栏](http://blog.didispace.com/categories/Spring-Boot/)，里面还附有git地址。<br>
 基础提高教程可以参考：[zheting的springboot干货系列](http://www.cnblogs.com/zheting/category/966890.html)。<br>
@@ -109,5 +120,8 @@ NettySocketIO是一个开源框架，非要说什么官网的话 怕就是上面
 
 
 ### 炸金花游戏逻辑
-[参考网上的状态模式](http://blog.csdn.net/hguisu/article/details/7557252)
-[扎金花大小比较算法(Java版)](http://blog.csdn.net/dobuy/article/details/31521609)
+[参考网上的状态模式](http://blog.csdn.net/hguisu/article/details/7557252)<br>
+[扎金花大小比较算法(Java版)](http://blog.csdn.net/dobuy/article/details/31521609)<br>
+
+初步完成整个游戏逻辑流程，没有页面，只有一个粗糙的按钮界面(baseUrl/static/index2.html)，下面是后台服务器的日志：
+![游戏流程后台日志](https://github.com/root-wyj/springboot_im/blob/master/img/display_img_1.png)

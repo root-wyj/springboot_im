@@ -9,6 +9,7 @@ import java.lang.reflect.Type;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+@SuppressWarnings(value={"unchecked", "rawtypes"})
 public class ReflectionUtils {
 	private static final Logger logger = LoggerFactory.getLogger(ReflectionUtils.class);
 

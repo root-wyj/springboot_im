@@ -1,6 +1,14 @@
 # springboot_im
 使用springboot开发的一个极其简易的可以聊天或者留言的web。主要联系springboot相关知识和长连接。
 
+接下来的任务<br>
+1. 简单的断线重连。
+2. 完成1之后在完善客户端的返回信息，然后看看是否需要把发消息的单独提出来或者整合到RoomContext里面
+3. 增加上redis缓存，room的和user的
+4. 看是否需要room连接池和room消息队列<可以延后再延后>
+
+
+
 ps: git常用命令
 - git init
 - git add .|file
@@ -110,7 +118,8 @@ Netty服务器是一个使用了java `nio`-非阻塞流来处理http请求的，
 - [详细介绍 -- 阻塞和非阻塞，同步和异步](https://www.cnblogs.com/George1994/p/6702084.html)
 - [IO - 同步，异步，阻塞，非阻塞 ](http://blog.csdn.net/historyasamirror/article/details/5778378)
 - [高性能IO设计 & Java NIO & 同步/异步 阻塞/非阻塞 Reactor/Proactor](https://www.cnblogs.com/charlesblc/p/6072827.html)
-
+- [我认为的可能是在墙外的好东西](https://code.google.com/p/socketio-netty/downloads/detail?name=chat_server.zip&can=2&q=#makechanges)
+- [Netty 官网guide文档](http://netty.io/wiki/user-guide-for-4.x.html)
 <br><br>
 NettySocketIO是一个开源框架，非要说什么官网的话 怕就是上面说到的他的git地址了。而且自己去找NettySocketIO的使用DEMO也是少的可怜，文档更是没有，所以只能自己去研究了。博主通过研究NettySocketIO源码，总结以下：
 - **`Namespace`** : `Namespace implements SocketIONamespace`。而且也是`SocketIONamespace`的唯一实现，SocketIOServer中声明了它的实例 `mainNamespace`，里面保存了 所有的监听器、所有的客户端、客户端与Room的对应关系等数据，可以说他保存着SocketServer的用户所有信息。Namespace都会有一个名字，新创建一个Server的时候，都会默认创建一个名字为`""`的Namespace。
@@ -125,3 +134,10 @@ NettySocketIO是一个开源框架，非要说什么官网的话 怕就是上面
 
 初步完成整个游戏逻辑流程，没有页面，只有一个粗糙的按钮界面(baseUrl/static/index2.html)，下面是后台服务器的日志：
 ![游戏流程后台日志](https://github.com/root-wyj/springboot_im/blob/master/img/display_img_1.png)
+
+### 断线重连逻辑
+经过慎重仔细的思考，根据现在的游戏逻辑与信息存储模型，最大的问题其实就是当这个用户再连接回来的时候，不能根据已有的信息回溯到原来的所有信息，并建立连接（其实一般都会遇到这种问题）。 网上有的建议说当用户第一次建立房间的时候维护一个在服务器和本地都不会变的client_id，这样，当用户再次连接的时候，就可以根据此id来检查服务器有没有已经进入的房间信息，然后达到重连的效果。<br>
+
+其实，这可以说是一种解决办法，因为它能解决现在遇到的问题，但是总感觉这种实现怪怪的，怪就可能有他的不合理之处，或者说和现实中的处理流程不一样（就像我在开发过程对总押注的计算，和对最后结果的处理，虽然一开始都得到了正确的结果，但是因为没有按照现实中的流程来计算，按照本来的模型来存储，导致后来简单的修改就导致了结果计算不正确），虽然结果一样，但是在未来的不断修改增加的需求过程中，总会出现问题的。
+
+最后，我决定使用一个掉线用户池，就是说如果服务器发现某个用户掉线了，则把相关必要信息存储在一个掉线用户池中，当一个用户连接上来的时候，先根据id检查该池中是否有该用户，如果有则能找到原来所有用户的信息，当然数据的恢复也就是断线重连也就很简单了。

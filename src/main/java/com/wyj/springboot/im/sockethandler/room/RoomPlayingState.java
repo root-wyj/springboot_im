@@ -71,11 +71,13 @@ public class RoomPlayingState extends ARoomState{
 	public void openThisRound(long userId) {
 		
 		if (context.joinedUserId.peek() != userId) {
-			RoomContext.logger.info("{}(id:{})想摊牌{}， 但是还没轮到他说话。",context.usersInRoom.get(userId).getUser().getUsername(), userId);
+			RoomContext.logger.info("{}(id:{})想摊牌， 但是还没轮到他说话。",context.usersInRoom.get(userId).getUser().getUsername(), userId);
 			return ;
 		}
 		
 		context.winerId = context.joinedUserId.pollFirst();
+		
+		RoomContext.logger.info("{}(id:{})摊牌。",context.usersInRoom.get(userId).getUser().getUsername(), userId);
 		
 		while (!context.joinedUserId.isEmpty()) {
 			long nextUserId = context.joinedUserId.pollFirst();

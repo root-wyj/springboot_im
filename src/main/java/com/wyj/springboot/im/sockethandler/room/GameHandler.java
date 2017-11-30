@@ -11,7 +11,6 @@ import com.corundumstudio.socketio.SocketIOServer;
 import com.corundumstudio.socketio.annotation.OnEvent;
 import com.corundumstudio.socketio.namespace.Namespace;
 import com.wyj.springboot.im.entity.common.ResponseBean;
-import com.wyj.springboot.im.service.IRoomService;
 import com.wyj.springboot.im.sockethandler.SocketConnectedHandler;
 import com.wyj.springboot.im.sockethandler.entity.UserInCache;
 import com.wyj.springboot.im.socketnio.NettySocketServer;
@@ -25,9 +24,6 @@ import com.wyj.springboot.im.socketnio.NettySocketServer;
 @Component
 public class GameHandler {
 
-	@Autowired
-	IRoomService roomService;
-	
 	private SocketIOServer server;
 	
 	@Autowired
@@ -58,6 +54,7 @@ public class GameHandler {
 		} 
 		
 		room.startGame();
+		request.sendAckData(room);
 	}
 	
 	@OnEvent("yazhu")
@@ -65,7 +62,7 @@ public class GameHandler {
 		UserInCache userInCache = SocketConnectedHandler.clientMap.get(client.getSessionId().toString());
 		RoomContext room = RoomContext.roomMap.get(userInCache.getRoomId());
 		room.addCost(userInCache.getUserId(), cost);
-		
+		request.sendAckData(room);
 	}
 	
 	@OnEvent("exitThisRound")
@@ -73,6 +70,7 @@ public class GameHandler {
 		UserInCache userInCache = SocketConnectedHandler.clientMap.get(client.getSessionId().toString());
 		RoomContext room = RoomContext.roomMap.get(userInCache.getRoomId());
 		room.exitThisRound(userInCache.getUserId());
+		request.sendAckData(room);
 	}
 	
 	@OnEvent("openThisRound")
@@ -80,6 +78,7 @@ public class GameHandler {
 		UserInCache userInCache = SocketConnectedHandler.clientMap.get(client.getSessionId().toString());
 		RoomContext room = RoomContext.roomMap.get(userInCache.getRoomId());
 		room.openThisRound(userInCache.getUserId());
+		request.sendAckData(room);
 	}
 	
 }

@@ -2,7 +2,6 @@ package com.wyj.springboot.im.sockethandler.room;
 
 import com.wyj.springboot.im.config.Constants;
 import com.wyj.springboot.im.entity.User;
-import com.wyj.springboot.im.sockethandler.SocketConnectedHandler;
 import com.wyj.springboot.im.sockethandler.card.CardDesc;
 import com.wyj.springboot.im.sockethandler.entity.UserInCache;
 import com.wyj.springboot.im.sockethandler.entity.UserInGame;
@@ -33,17 +32,15 @@ public class RoomReadyState extends ARoomState{
 		UserInGame user = context.usersInRoom.get(userId);
 		if (user != null) {
 			//可能这里需要把部分数据同步到缓存里
-			UserInCache userCache = SocketConnectedHandler.clientMap.get(userId);
-			userCache.setRoomId(null);
 			
 			context.usersInRoom.remove(userId);
 			context.joinedUserId.remove(userId);
 			
 			user.setRoomId(null);
 			user.setRoomContext(null);
+			RoomContext.logger.info("{} (id:{}) 退出了房间 {}", user.getUser().getUsername(), user.getUserId(), context.roomId);
 			user = null;
 
-			RoomContext.logger.info("{} (id:{}) 退出了房间 {}", userCache.getUsername(), userCache.getUserId(), context.roomId);
 		}
 	}
 
@@ -68,7 +65,7 @@ public class RoomReadyState extends ARoomState{
 		context.gameCounts++;
 		RoomContext.logger.info("游戏开始!!");
 		
-		context.changeState(RoomContext.readyState);
+		context.changeState(RoomContext.playingState);
 	}
 
 	@Override

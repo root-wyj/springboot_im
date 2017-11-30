@@ -60,12 +60,12 @@ public class RoomContext implements IRoomState{
 
 	@Override
 	public void addCost(long userId, int cost) {
-		addCost(userId, cost);
+		state.addCost(userId, cost);
 	}
 
 	@Override
 	public void openThisRound(long userId) {
-		openThisRound(userId);
+		state.openThisRound(userId);
 	}
 	
 	
@@ -115,8 +115,14 @@ public class RoomContext implements IRoomState{
 		logger.info("\r\n当前下注情况 roomId:{}, ownerId:{}：", roomId, ownerId);
 		gameCosted = 0;
 		for (UserInGame u : usersInRoom.values()) {
-			gameCosted += u.getThisGameCost();
-			RoomContext.logger.info("用户{}下注{}", u.getUser().getUsername(), u.getThisGameCost());
+			if (u.isInGame()) {
+				gameCosted += u.getThisGameCost();
+				RoomContext.logger.info("用户{}下注{}", u.getUser().getUsername(), u.getThisGameCost());
+			} else {
+				// 这里是负的 所以是减
+				gameCosted -= u.getPreResult().getCost();
+				RoomContext.logger.info("用户{}下注{}", u.getUser().getUsername(), -u.getPreResult().getCost());
+			}
 		}
 		RoomContext.logger.info("总下注：{}\n", gameCosted);
 	}
@@ -125,9 +131,31 @@ public class RoomContext implements IRoomState{
 		return ownerId;
 	}
 	
+	public void setOwnerId(long ownerId) {
+		this.ownerId = ownerId;
+	}
+	
 	public String getRoomId() {
 		return roomId;
 	}
 	
+	public LinkedList<Long> getJoinedUserId() {
+		return joinedUserId;
+	}
 	
+	public Map<Long, UserInGame> getUsersInRoom() {
+		return usersInRoom;
+	}
+	
+	public int getGameCosted() {
+		return gameCosted;
+	}
+	
+	public int getPreCost() {
+		return preCost;
+	}
+	
+	public long getWinerId() {
+		return winerId;
+	}
 }

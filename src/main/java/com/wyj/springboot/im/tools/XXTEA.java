@@ -173,7 +173,7 @@ public class XXTEA {
         StringBuilder sb = new StringBuilder();
         for (int i = 0; i < data.length; i++) {
             sb.append(PadLeft(Long.toHexString(data[i]), 16));
-            System.out.println("data["+i+"] getBytes.length:"+Long.toBinaryString(data[i]).length());
+//            System.out.println("data["+i+"] getBytes.length:"+Long.toBinaryString(data[i]).length());
         }
         return sb.toString();
     }

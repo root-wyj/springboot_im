@@ -1,5 +1,6 @@
 package com.wyj.springboot.im.sockethandler.room;
 
+
 import com.wyj.springboot.im.sockethandler.card.CardDesc;
 import com.wyj.springboot.im.sockethandler.entity.UserInCache;
 import com.wyj.springboot.im.sockethandler.entity.UserInGame;
@@ -49,11 +50,16 @@ public class RoomPlayingState extends ARoomState{
 	@Override
 	public void addCost(long userId, int cost) {
 		if (userId == context.joinedUserId.peek()) {
+			if (cost < context.preCost) {
+				RoomContext.logger.info("{}(id:{})想加注{}。 但是小于之前{}的注码，失败！", context.usersInRoom.get(userId).getUser().getUsername(), userId, cost, context.preCost);
+				return;
+			}
+			
 			context.usersInRoom.get(userId).addThisGameCost(cost);
+			RoomContext.logger.info("{}(id:{})加注{}。",context.usersInRoom.get(userId).getUser().getUsername(), userId, cost);
 			context.refreshCost();
 			Long pollId = context.joinedUserId.pollFirst();
 			context.joinedUserId.offerLast(pollId);
-			RoomContext.logger.info("{}(id:{})加注{}。",context.usersInRoom.get(userId).getUser().getUsername(), userId, cost);
 		} else {
 			RoomContext.logger.info("{}(id:{})想加注{}， 但是还没轮到他说话。",context.usersInRoom.get(userId).getUser().getUsername(), userId, cost);
 		}
@@ -102,19 +108,31 @@ public class RoomPlayingState extends ARoomState{
 	
 	private void roomEndGame() {
 		context.joinedUserId.clear();
-		context.joinedUserId.addAll(context.usersInRoom.keySet());
-		
-		context.preCost = 0;
-		context.gameCosted = 0;
-		context.card.clear();
 		
 		for (UserInGame u : context.usersInRoom.values()) {
 			userEndGame(u, u.getUserId()==context.winerId);
 		}
 		
+		context.preCost = 0;
+		context.gameCosted = 0;
+		context.card.clear();
+		
 		context.changeState(RoomContext.readyState);
 		
-		RoomContext.logger.info("本局结束");
+		context.joinedUserId.addAll(context.usersInRoom.keySet());
+		
+		RoomContext.logger.info("本局结束, {}赢得了这场游戏!!", context.winerId);
+		
+		StringBuffer sb = new StringBuffer();
+		
+		for (UserInGame u : context.usersInRoom.values()) {
+			sb.append(u.getUser().getUsername()+"("+u.getUserId()+")")
+			  .append(" 使用卡牌 "+u.getPreResult().getCard())
+			  .append(" 赢得 "+u.getPreResult().getCost())
+			  .append("\r\n");
+		}
+		RoomContext.logger.info("本局结果： {}", sb.toString());
+
 	}
 
 }

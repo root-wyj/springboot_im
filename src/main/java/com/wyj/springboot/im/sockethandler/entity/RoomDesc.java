@@ -66,7 +66,7 @@ public class RoomDesc {
 		preCost = 0;
 		gameCounts = 0;
 		isPlaying = false;
-		logger.info("管理员 {} (id:{}) 创建了房间 {}", owner.getUser().getUsername(), owner.getUserId(), roomId);
+		logger.info("房主 {} (id:{}) 创建了房间 {}", owner.getUser().getUsername(), owner.getUserId(), roomId);
 		inRoom(owner);
 	}
 	
@@ -166,7 +166,7 @@ public class RoomDesc {
 	}
 	
 	private void refreshCost() {
-		logger.info("\r\n当前下注情况 roomId:{}, ownerId:{}：", roomId, ownerId);
+		logger.info("当前下注情况 roomId:{}, ownerId:{}：\r\n", roomId, ownerId);
 		gameCosted = 0;
 		for (UserInGame u : usersInRoom.values()) {
 			gameCosted += u.getThisGameCost();

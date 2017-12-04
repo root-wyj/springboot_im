@@ -118,6 +118,7 @@ Netty服务器是一个使用了java `nio`-非阻塞流来处理http请求的，
 - [详细介绍 -- 阻塞和非阻塞，同步和异步](https://www.cnblogs.com/George1994/p/6702084.html)
 - [IO - 同步，异步，阻塞，非阻塞 ](http://blog.csdn.net/historyasamirror/article/details/5778378)
 - [高性能IO设计 & Java NIO & 同步/异步 阻塞/非阻塞 Reactor/Proactor](https://www.cnblogs.com/charlesblc/p/6072827.html)
+- [JAVA NIO 简单介绍](http://www.cnblogs.com/leehongee/p/3323840.html)
 - [我认为的可能是在墙外的好东西](https://code.google.com/p/socketio-netty/downloads/detail?name=chat_server.zip&can=2&q=#makechanges)
 - [Netty 官网guide文档](http://netty.io/wiki/user-guide-for-4.x.html)
 <br><br>

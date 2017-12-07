@@ -33,7 +33,14 @@ ps: git常用命令
 - `git tag -d tagname` 删除里程碑
 - `git tag tagname ec3edf7` 如果发现删除错误，通过这句命令补救。表示将此tag指向某个commit
 - `git push origin :mytag2` 远程删除tag
-<br>更加详细的里程碑内容，请参考：[Git学习7：Git中的里程碑](http://blog.csdn.net/u011116672/article/details/51277341)
+<br>更加详细的里程碑内容，请参考：[Git学习7：Git中的里程碑](http://blog.csdn.net/u011116672/article/details/51277341)<br>
+
+<br>
+现在需要找到一个写接口文档的工具，其实有很多，我也知道Swagger，但是因为swagger比较复杂繁琐，所以这里并不准备用swagger。通过百度`接口文档 管理`找到了很多相关的软件，有`sosoApi`、`小幺鸡`、`ShowDoc`等。但是具体选择哪一个呢？下面 我总结了一下选择需要参考的东西。
+- 首先要明确，自己需要哪些功能。 我初步总结的有，普通API的支持、socket的支持、易编辑、多用户权限管理，这几个是最最基本的，另外的加分项有 是否可以发布到自己的服务器，毕竟这个是不能公开的； 是否已支持简单的mock层，就是仿服务器数据，这样前端就不用等后台的数据了。
+- 找这些接口文档工具的优缺点，是否满足自己的要求。 通过什么办法呢，就是去看官方的帮助文档了。。（自从用了NettySocketIO这个没文档的东西，就对没文档的东西产生了抵触心理，没文档就放弃吧，否则学习的太累了，而且也很难挖掘他的真正优势）
+- 最后决定 [`小幺鸡`](http://www.xiaoyaoji.cn)
+
 
 ### springboot 学习教程
 基础教程参考的是：[翟永超的springboot教程专栏](http://blog.didispace.com/categories/Spring-Boot/)，里面还附有git地址。<br>

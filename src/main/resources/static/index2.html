@@ -180,6 +180,7 @@ body {
 		})
 	}
 </script>
+
 </head>
 
 <body>
@@ -194,6 +195,11 @@ body {
 		<input id="msg" class="input-xlarge" type="text"
 			placeholder="Type something..." />
 		<button type="button" onClick="sendMessage()" class="btn" id="send">Send</button>
+		<br />
+		<input id="username" type="text" placeholder="username" />
+		<input id="password" type="text" placeholder="password" />
+		<button type="button" class="btn" id="login">LOGIN</button>
+		<button type="button" class="btn" id="register">REGISTER</button>
 		<br />
 		<input id="token" type="text" placeholder="your token to socketio" />
 		<button type="button" onClick="connect()" class="btn" id="conn">Connect</button>
@@ -218,5 +224,43 @@ body {
 
 
 </body>
+
+
+<script >
+function postData(url, data){
+	$.ajax({
+		type:"post",
+		url:url,
+		async:true,
+		data:JSON.stringify(data),
+		dataType: "json",
+		contentType: "application/json; charset=utf-8",
+		success: function(data){
+			console.log("success, data:"+data);
+			document.getElementById("token").value=data.content.zjh_header_user_token
+		},
+		error: function(){
+			console.log('fail');
+		}
+	});
+}
+var login = document.getElementById("login")
+login.onclick=function(){
+	var data = {
+			"username":document.getElementById("username").value,
+			"password":document.getElementById("password").value
+	}
+	postData("http://localhost:8080/login", data);	
+}
+var register = document.getElementById("register");
+register.onclick=function() {
+	var data = {
+			"username":document.getElementById("username").value,
+			"password":document.getElementById("password").value
+	}
+	postData("http://localhost:8080/registe", data);
+}
+
+</script>
 
 </html>

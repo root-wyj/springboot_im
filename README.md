@@ -141,8 +141,7 @@ NettySocketIO是一个开源框架，非要说什么官网的话 怕就是上面
 [扎金花大小比较算法(Java版)](http://blog.csdn.net/dobuy/article/details/31521609)<br>
 
 初步完成整个游戏逻辑流程，没有页面，只有一个粗糙的按钮界面(baseUrl/static/index2.html)，下面是后台服务器的日志：
-![游戏流程后台日志](https://github.com/root-wyj/springboot_im/blob/master/img/display_img_1.png)
-
+![游戏流程后台日志](https://github.com/root-wyj/springboot_im/blob/master/img/1_log_display_img_01.png)
 ### 断线重连逻辑
 经过慎重仔细的思考，根据现在的游戏逻辑与信息存储模型，最大的问题其实就是当这个用户再连接回来的时候，不能根据已有的信息回溯到原来的所有信息，并建立连接（其实一般都会遇到这种问题）。 网上有的建议说当用户第一次建立房间的时候维护一个在服务器和本地都不会变的client_id，这样，当用户再次连接的时候，就可以根据此id来检查服务器有没有已经进入的房间信息，然后达到重连的效果。<br>
 
